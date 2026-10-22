@@ -1,7 +1,7 @@
 (function(root){
 'use strict';
 const months=['فروردین','اردیبهشت','خرداد','تیر','مرداد','شهریور','مهر','آبان','آذر','دی','بهمن','اسفند'];
-const norm=s=>String(s??'').replace(/[۰-۹]/g,c=>'۰۱۲۳۴۵۶۷۸۹'.indexOf(c)).replace(/[٠-٩]/g,c=>'٠١٢٣٤٥٦٧٨٩'.indexOf(c)).replace(/ي/g,'ی').replace(/ك/g,'ک').replace(/[٬,]/g,'').trim();
+const norm=s=>String(s??'').replace(/[\u200e\u200f\u202a-\u202e\u2066-\u2069]/g,'').replace(/[۰-۹]/g,c=>'۰۱۲۳۴۵۶۷۸۹'.indexOf(c)).replace(/[٠-٩]/g,c=>'٠١٢٣٤٥٦٧٨٩'.indexOf(c)).replace(/ي/g,'ی').replace(/ك/g,'ک').replace(/[٬,]/g,'').trim();
 const calendar=new Intl.DateTimeFormat('en-US-u-ca-persian-nu-latn',{year:'numeric',month:'numeric',day:'numeric',timeZone:'UTC'});
 function parts(d){const p=Object.fromEntries(calendar.formatToParts(d).map(x=>[x.type,x.value]));return [+p.year,+p.month,+p.day];}
 const dateKey=(y,m,d)=>`${y}/${String(m).padStart(2,'0')}/${String(d).padStart(2,'0')}`;
@@ -20,8 +20,8 @@ function draft(text,target='tasks',base=today()){
  const numeric=s.match(/\d{4}\/\d{1,2}\/\d{1,2}/);if(numeric)date=dateNorm(numeric[0]);
  if(!date){if(/پس فردا/.test(s))date=addDays(base,2);else if(/فردا/.test(s))date=addDays(base,1);else if(/امروز/.test(s))date=base;}
  if(!date){for(let i=0;i<months.length;i++){const pos=s.indexOf(months[i]);if(pos<0)continue;const before=s.slice(0,pos).trim().split(/\s+/);let day=null;for(let n=Math.min(5,before.length);n>=1;n--){const v=numberWords(before.slice(-n).join(' '));if(v>=1&&v<=31){day=v;break}}const year=s.slice(pos+months[i].length).match(/^\s*(1[3-6]\d{2})/);if(day){date=dateNorm(`${year?year[1]:base.slice(0,4)}/${i+1}/${day}`)}break;}}
- const unit=s.match(/تومان|ریال/);if(unit){const tokens=s.slice(0,unit.index).trim().split(/\s+/);for(let n=Math.min(15,tokens.length);n>=1;n--){const v=numberWords(tokens.slice(-n).join(' '));if(v!==null){const a=v*(unit[0]==='تومان'?10:1);if(Number.isSafeInteger(a)&&a>0)amount=a;break}}}
- if(amount===null){const labeled=s.match(/(?:مبلغ|جمع کل|جمع قابل پرداخت)\s*[:：]?\s*(\d{3,})/);if(labeled&&Number.isSafeInteger(+labeled[1]))amount=+labeled[1];}
+ const unit=s.match(/تومان|ریال|RIAL|IRR/i);if(unit){const tokens=s.slice(0,unit.index).trim().split(/\s+/);for(let n=Math.min(15,tokens.length);n>=1;n--){const v=numberWords(tokens.slice(-n).join(' '));if(v!==null){const a=v*(unit[0]==='تومان'?10:1);if(Number.isSafeInteger(a)&&a>0)amount=a;break}}}
+ if(amount===null){const labeled=s.match(/(?:مبلغ|جمع کل|جمع قابل پرداخت|Amount)\s*[:：]?\s*(\d{3,})/i);if(labeled&&Number.isSafeInteger(+labeled[1]))amount=+labeled[1];}
  let kind=target;if(!['tasks','pay','receive'].includes(kind))kind=amount!==null?(/دریافت|بگیرم|طلب|واریز.*به من/.test(s)?'receive':'pay'):'tasks';
  return {kind,title:text.trim().slice(0,180),date,amount,photo:''};
 }

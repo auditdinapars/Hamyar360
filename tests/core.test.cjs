@@ -50,3 +50,8 @@ test('inbox backups retain processed linkage; reminders validate and migrate',()
  assert.ok(C.reminder('1405/08/01','09:30')>0);assert.equal(C.reminder('1405/08/01','29:00'),0);
  assert.throws(()=>C.validate({...db,inbox:[{id:'x',text:'x',processed:false,photo:'javascript:x'}]}));
 });
+
+test('OCR document output parses dates and amounts despite bidirectional markers',()=>{
+ const d=C.draft('رسید پرداخت مبلغ\n‎Invoice 1405/08/15‏\n‎Amount 250000 RIAL‏','auto');
+ assert.equal(d.date,'1405/08/15');assert.equal(d.amount,250000);assert.equal(d.kind,'pay');
+});
