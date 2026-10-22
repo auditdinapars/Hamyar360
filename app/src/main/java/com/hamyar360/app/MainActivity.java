@@ -87,7 +87,7 @@ public class MainActivity extends Activity {
   }
   private boolean beginExternal(){if(externalBusy){error("ابتدا عملیات جاری را تمام کنید");return false;}externalBusy=true;return true;}
   private void launchVoice(){if(beginExternal())voiceInput.start();}
-  @Override public void onRequestPermissionsResult(int request,String[] permissions,int[] results){super.onRequestPermissionsResult(request,permissions,results);voiceInput.onPermissionResult(request,results);if(request==916&&(results.length==0||results[0]!=android.content.pm.PackageManager.PERMISSION_GRANTED))error("اجازهٔ اعلان داده نشد؛ یادآور ذخیره شده اما اعلان نمایش داده نمی‌شود. در تنظیمات گوشی اعلان‌های همیار را فعال کنید.");}
+  @Override public void onRequestPermissionsResult(int request,String[] permissions,int[] results){super.onRequestPermissionsResult(request,permissions,results);voiceInput.onPermissionResult(request,results);if(request==916&&(results.length==0||results[0]!=android.content.pm.PackageManager.PERMISSION_GRANTED))error("اجازهٔ اعلان داده نشد؛ یادآور ذخیره شده اما اعلان نمایش داده نمی‌شود. در تنظیمات گوشی اعلان‌های حاصل 360 را فعال کنید.");}
   @Override protected void onStop(){voiceInput.onStop();super.onStop();}
   private void launchPhoto(){
     if(!beginExternal())return;

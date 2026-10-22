@@ -40,8 +40,8 @@ final class VoiceInput {
       finish();permissionHelp(false);return;
     }
     if(activity.shouldShowRequestPermissionRationale(Manifest.permission.RECORD_AUDIO)){
-      dialog=new AlertDialog.Builder(activity).setTitle("مجوز میکروفن همیار")
-        .setMessage("برای تبدیل فرمان شما به متن، همیار به میکروفن نیاز دارد. فقط با زدن فرمان صوتی گوش می‌دهد و فایل صوتی ذخیره نمی‌کند. سرویس گفتار گوشی ممکن است صدا را برای تبدیل به متن از طریق اینترنت پردازش کند.")
+      dialog=new AlertDialog.Builder(activity).setTitle("مجوز میکروفن حاصل 360")
+        .setMessage("برای تبدیل فرمان شما به متن، حاصل 360 به میکروفن نیاز دارد. فقط با زدن فرمان صوتی گوش می‌دهد و فایل صوتی ذخیره نمی‌کند. سرویس گفتار گوشی ممکن است صدا را برای تبدیل به متن از طریق اینترنت پردازش کند.")
         .setPositiveButton("ادامه",(d,w)->requestPermission())
         .setNegativeButton("انصراف",(d,w)->finish()).setOnCancelListener(d->finish()).show();
     }else requestPermission();
@@ -107,9 +107,9 @@ final class VoiceInput {
   }
   private void permissionHelp(boolean provider){
     if(destroyed||activity.isFinishing())return;
-    String text=provider?"همیار مجوز میکروفن دارد، اما سرویس گفتار اجازهٔ دسترسی نمی‌دهد. در تنظیمات گوشی، برنامه‌ای را که پیام خطا نام برده است (مثلاً Google یا سرویس گفتار گوگل) باز کنید و مجوز میکروفن آن را بررسی کنید. کلید سراسری میکروفن گوشی نیز باید روشن باشد.":"برای فرمان صوتی، مجوز میکروفن همیار را روی «هنگام استفاده از برنامه» بگذارید. ثبت دستی همچنان در دسترس است.";
+    String text=provider?"حاصل 360 مجوز میکروفن دارد، اما سرویس گفتار اجازهٔ دسترسی نمی‌دهد. در تنظیمات گوشی، برنامه‌ای را که پیام خطا نام برده است (مثلاً Google یا سرویس گفتار گوگل) باز کنید و مجوز میکروفن آن را بررسی کنید. کلید سراسری میکروفن گوشی نیز باید روشن باشد.":"برای فرمان صوتی، مجوز میکروفن حاصل 360 را روی «هنگام استفاده از برنامه» بگذارید. ثبت دستی همچنان در دسترس است.";
     listener.error(text);
-    dialog=new AlertDialog.Builder(activity).setTitle(provider?"مجوز سرویس گفتار":"مجوز میکروفن همیار").setMessage(text)
+    dialog=new AlertDialog.Builder(activity).setTitle(provider?"مجوز سرویس گفتار":"مجوز میکروفن حاصل 360").setMessage(text)
       .setPositiveButton("بازکردن تنظیمات",(d,w)->{try{Intent intent=provider?new Intent(Settings.ACTION_MANAGE_APPLICATIONS_SETTINGS):new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS,Uri.parse("package:"+activity.getPackageName()));activity.startActivity(intent);}catch(Exception ex){listener.error("تنظیمات گوشی را دستی باز کنید و مجوز میکروفن را بررسی کنید.");}})
       .setNegativeButton("فعلاً نه",null).show();
   }
