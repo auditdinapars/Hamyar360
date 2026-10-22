@@ -13,6 +13,16 @@ final class OfflineOcr {
     for(String lang:new String[]{"fas","eng"}){File f=new File(dir,lang+".traineddata");if(!f.exists()){File temp=new File(dir,lang+".tmp");try(InputStream in=context.getAssets().open("tessdata/"+lang+".traineddata");OutputStream out=new FileOutputStream(temp)){byte[] buf=new byte[16384];int n;while((n=in.read(buf))!=-1)out.write(buf,0,n);}if(!temp.renameTo(f))throw new IOException("model");}}
     byte[] bytes=Base64.decode(data.substring(data.indexOf(',')+1),Base64.DEFAULT);
     BitmapFactory.Options options=new BitmapFactory.Options();options.inJustDecodeBounds=true;BitmapFactory.decodeByteArray(bytes,0,bytes.length,options);if(options.outWidth<1||options.outHeight<1)throw new IOException("image");options.inSampleSize=1;while(Math.max(options.outWidth,options.outHeight)/options.inSampleSize>2400)options.inSampleSize*=2;options.inJustDecodeBounds=false;
-    Bitmap bitmap=BitmapFactory.decodeByteArray(bytes,0,bytes.length,options);TessBaseAPI tess=new TessBaseAPI();try{if(!tess.init(base.getAbsolutePath(),"fas+eng"))throw new IOException("init");tess.setPageSegMode(TessBaseAPI.PageSegMode.PSM_SPARSE_TEXT);tess.setImage(bitmap);return tess.getUTF8Text();}finally{tess.recycle();if(bitmap!=null)bitmap.recycle();}
+    Bitmap bitmap=BitmapFactory.decodeByteArray(bytes,0,bytes.length,options);TessBaseAPI tess=new TessBaseAPI();
+    try{
+      if(!tess.init(base.getAbsolutePath(),"fas+eng"))throw new IOException("init");
+      tess.setPageSegMode(TessBaseAPI.PageSegMode.PSM_SPARSE_TEXT);tess.setImage(bitmap);String text=tess.getUTF8Text();
+      // A second Persian-only pass preserves short RTL lines on bilingual receipts.
+      if(!tess.init(base.getAbsolutePath(),"fas"))throw new IOException("init Persian");
+      tess.setPageSegMode(TessBaseAPI.PageSegMode.PSM_SPARSE_TEXT);tess.setImage(bitmap);
+      StringBuilder result=new StringBuilder(text);
+      for(String line:tess.getUTF8Text().split("\\r?\\n")){line=line.trim();if(line.matches(".*[\\u0600-\\u06ff].*")&&!text.contains(line))result.append('\n').append(line);}
+      return result.toString();
+    }finally{tess.recycle();if(bitmap!=null)bitmap.recycle();}
   }
 }
