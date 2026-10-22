@@ -34,9 +34,10 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class MainActivity extends Activity {
-  private static final int FILE_PICK=911, SAVE_DOCUMENT=912, VOICE=913, PHOTO=914;
+  private static final int FILE_PICK=911, SAVE_DOCUMENT=912, PHOTO=914;
   private static final String HOME="file:///android_asset/index.html";
   private WebView web;
+  private VoiceInput voiceInput;
   private ValueCallback<Uri[]> uploadCallback;
   private File cameraFile;
   private Uri cameraUri;
@@ -48,6 +49,11 @@ public class MainActivity extends Activity {
   @Override public void onCreate(Bundle state) {
     super.onCreate(state);
     if(state!=null){String path=state.getString("cameraFile");if(path!=null)cameraFile=new File(path);String uri=state.getString("cameraUri");if(uri!=null)cameraUri=Uri.parse(uri);pendingEvent=state.getString("pendingEvent");externalBusy=state.getBoolean("externalBusy");}
+    voiceInput=new VoiceInput(this,new VoiceInput.Listener(){
+      @Override public void result(String text){event("voice","text",text);}
+      @Override public void error(String message){MainActivity.this.error(message);}
+      @Override public void finished(){externalBusy=false;}
+    });
     web=new WebView(this);setContentView(web);
     web.setOnApplyWindowInsetsListener((view,insets)->{view.setPadding(insets.getSystemWindowInsetLeft(),insets.getSystemWindowInsetTop(),insets.getSystemWindowInsetRight(),insets.getSystemWindowInsetBottom());return insets;});
     web.requestApplyInsets();
@@ -74,14 +80,9 @@ public class MainActivity extends Activity {
     web.loadUrl(HOME);
   }
   private boolean beginExternal(){if(externalBusy){error("ابتدا عملیات جاری را تمام کنید");return false;}externalBusy=true;return true;}
-  private void launchVoice(){
-    if(!beginExternal())return;
-    Intent intent=new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
-    intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
-    intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE,"fa-IR");intent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS,1);
-    intent.putExtra(RecognizerIntent.EXTRA_PROMPT,"عنوان کار یا تعهد، مبلغ و تاریخ را بگویید");
-    try{startActivityForResult(intent,VOICE);}catch(Exception ex){externalBusy=false;error("تشخیص گفتار فارسی روی این گوشی در دسترس نیست؛ سرویس گفتار گوشی را فعال کنید.");}
-  }
+  private void launchVoice(){if(beginExternal())voiceInput.start();}
+  @Override public void onRequestPermissionsResult(int request,String[] permissions,int[] results){super.onRequestPermissionsResult(request,permissions,results);voiceInput.onPermissionResult(request,results);}
+  @Override protected void onStop(){voiceInput.onStop();super.onStop();}
   private void launchPhoto(){
     if(!beginExternal())return;
     try{
@@ -105,7 +106,6 @@ public class MainActivity extends Activity {
   @Override protected void onActivityResult(int request,int result,Intent data){
     super.onActivityResult(request,result,data);
     if(request==FILE_PICK&&uploadCallback!=null){uploadCallback.onReceiveValue(WebChromeClient.FileChooserParams.parseResult(result,data));uploadCallback=null;return;}
-    if(request==VOICE){externalBusy=false;if(result==RESULT_OK&&data!=null){ArrayList<String> texts=data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);if(texts!=null&&!texts.isEmpty())event("voice","text",texts.get(0));else error("گفتار تشخیص داده نشد؛ دوباره تلاش کنید.");}else event("cancel",null,null);}
     if(request==PHOTO){if(result==RESULT_OK&&cameraFile!=null){final File captured=cameraFile;worker.execute(()->{try{String encoded=encodePhoto(captured);runOnUiThread(()->{externalBusy=false;cleanCamera();event("photo","data",encoded);});}catch(Exception ex){runOnUiThread(()->{externalBusy=false;cleanCamera();error("خواندن عکس ممکن نشد؛ دوباره عکس بگیرید.");});}});}else{externalBusy=false;cleanCamera();event("cancel",null,null);}}
     if(request==SAVE_DOCUMENT){if(result==RESULT_OK&&data!=null&&data.getData()!=null){final Uri dest=data.getData();worker.execute(()->{try(java.io.InputStream in=new java.io.FileInputStream(exportFile());OutputStream out=getContentResolver().openOutputStream(dest,"wt")){if(out==null)throw new Exception("no output");byte[] buffer=new byte[8192];int size;while((size=in.read(buffer))!=-1)out.write(buffer,0,size);runOnUiThread(()->event("saved",null,null));}catch(Exception ex){runOnUiThread(()->error("ذخیرهٔ فایل ناموفق بود؛ دوباره تلاش کنید."));}finally{exportFile().delete();runOnUiThread(()->externalBusy=false);}});}else{externalBusy=false;exportFile().delete();event("cancel",null,null);}}
   }
@@ -123,7 +123,7 @@ public class MainActivity extends Activity {
   private void error(String text){Toast.makeText(this,text,Toast.LENGTH_LONG).show();event("error","message",text);}
   private void event(String type,String key,String value){try{JSONObject event=new JSONObject();event.put("type",type);if(key!=null)event.put(key,value);send(event.toString());}catch(Exception ignored){}}
   private void send(String json){if(!pageReady){pendingEvent=json;return;}if(web!=null&&!isDestroyed())web.evaluateJavascript("window.onNativeResult("+json+");",null);}
-  @Override protected void onSaveInstanceState(Bundle state){super.onSaveInstanceState(state);if(cameraFile!=null)state.putString("cameraFile",cameraFile.getPath());if(cameraUri!=null)state.putString("cameraUri",cameraUri.toString());state.putString("pendingEvent",pendingEvent);state.putBoolean("externalBusy",externalBusy);}
+  @Override protected void onSaveInstanceState(Bundle state){super.onSaveInstanceState(state);if(cameraFile!=null)state.putString("cameraFile",cameraFile.getPath());if(cameraUri!=null)state.putString("cameraUri",cameraUri.toString());state.putString("pendingEvent",pendingEvent);state.putBoolean("externalBusy",externalBusy && (voiceInput==null || !voiceInput.isActive()));}
   @Override public void onBackPressed(){if(web!=null)web.evaluateJavascript("(()=>{const d=Array.from(document.querySelectorAll('dialog[open]')).pop();if(d){if(d.id==='editor')closeEditor();else d.close();return true;}if(active!=='home'){show('home');return true;}return false;})()",handled->{if("false".equals(handled))MainActivity.super.onBackPressed();});else super.onBackPressed();}
-  @Override protected void onDestroy(){if(uploadCallback!=null){uploadCallback.onReceiveValue(null);uploadCallback=null;}worker.shutdown();if(web!=null){web.removeJavascriptInterface("HamyarAndroid");web.destroy();web=null;}super.onDestroy();}
+  @Override protected void onDestroy(){if(voiceInput!=null)voiceInput.destroy();if(uploadCallback!=null){uploadCallback.onReceiveValue(null);uploadCallback=null;}worker.shutdown();if(web!=null){web.removeJavascriptInterface("HamyarAndroid");web.destroy();web=null;}super.onDestroy();}
 }

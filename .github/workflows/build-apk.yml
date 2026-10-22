@@ -33,7 +33,7 @@ jobs:
         with:
           gradle-version: '8.9'
       - name: Build debug APK
-        run: gradle --no-daemon --stacktrace :app:assembleDebug :app:lintDebug
+        run: gradle --no-daemon --stacktrace :app:assembleDebug :app:lintDebug :app:testDebugUnitTest
       - name: Checksum APK
         working-directory: app/build/outputs/apk/debug
         run: sha256sum app-debug.apk > app-debug.apk.sha256
@@ -50,6 +50,9 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: Hamyar360-lint-reports
-          path: app/build/reports/lint-results-debug.*
+          path: |
+            app/build/reports/lint-results-debug.*
+            app/build/reports/tests/testDebugUnitTest/**
+            app/build/test-results/testDebugUnitTest/*.xml
           if-no-files-found: ignore
           retention-days: 14

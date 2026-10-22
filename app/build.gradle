@@ -2,8 +2,13 @@ plugins { id 'com.android.application' }
 android {
     namespace 'com.hamyar360.app'
     compileSdk 35
-    defaultConfig { applicationId 'com.hamyar360.app'; minSdk 24; targetSdk 35; versionCode 3; versionName '0.5.0' }
+    defaultConfig { applicationId 'com.hamyar360.app'; minSdk 24; targetSdk 35; versionCode 4; versionName '0.5.1' }
     compileOptions { sourceCompatibility JavaVersion.VERSION_17; targetCompatibility JavaVersion.VERSION_17 }
+    testOptions { unitTests.includeAndroidResources = true }
 }
 
 dependencies { implementation 'androidx.core:core:1.13.1' }
+dependencies {
+    testImplementation 'junit:junit:4.13.2'
+    testImplementation 'org.robolectric:robolectric:4.14.1'
+}
