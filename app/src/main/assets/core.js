@@ -21,6 +21,7 @@ function draft(text,target='tasks',base=today()){
  if(!date){if(/پس فردا/.test(s))date=addDays(base,2);else if(/فردا/.test(s))date=addDays(base,1);else if(/امروز/.test(s))date=base;}
  if(!date){for(let i=0;i<months.length;i++){const pos=s.indexOf(months[i]);if(pos<0)continue;const before=s.slice(0,pos).trim().split(/\s+/);let day=null;for(let n=Math.min(5,before.length);n>=1;n--){const v=numberWords(before.slice(-n).join(' '));if(v>=1&&v<=31){day=v;break}}const year=s.slice(pos+months[i].length).match(/^\s*(1[3-6]\d{2})/);if(day){date=dateNorm(`${year?year[1]:base.slice(0,4)}/${i+1}/${day}`)}break;}}
  const unit=s.match(/تومان|ریال/);if(unit){const tokens=s.slice(0,unit.index).trim().split(/\s+/);for(let n=Math.min(15,tokens.length);n>=1;n--){const v=numberWords(tokens.slice(-n).join(' '));if(v!==null){const a=v*(unit[0]==='تومان'?10:1);if(Number.isSafeInteger(a)&&a>0)amount=a;break}}}
+ if(amount===null){const labeled=s.match(/(?:مبلغ|جمع کل|جمع قابل پرداخت)\s*[:：]?\s*(\d{3,})/);if(labeled&&Number.isSafeInteger(+labeled[1]))amount=+labeled[1];}
  let kind=target;if(!['tasks','pay','receive'].includes(kind))kind=amount!==null?(/دریافت|بگیرم|طلب|واریز.*به من/.test(s)?'receive':'pay'):'tasks';
  return {kind,title:text.trim().slice(0,180),date,amount,photo:''};
 }
@@ -29,13 +30,20 @@ function validate(data){
  const ids=new Set();const clean=(x,debt)=>{if(!x||typeof x.id!=='string'||!x.id||ids.has(x.id)||typeof x.title!=='string'||!x.title.trim()||x.title.length>180||typeof x.done!=='boolean'||typeof x.date!=='string'||(x.date&&!validDate(x.date)))throw Error('رکورد نامعتبر در پشتیبان');ids.add(x.id);
  if(debt&&(!['pay','receive'].includes(x.type)||!Number.isSafeInteger(x.amount)||x.amount<=0||!x.date))throw Error('تعهد نامعتبر');
  if(x.photo&&(!(typeof x.photo==='string')||x.photo.length>2000000||!/^data:image\/(jpeg|png|webp);base64,[A-Za-z0-9+/=]+$/.test(x.photo)))throw Error('عکس نامعتبر');
- const r={id:x.id,title:x.title,date:x.date?dateNorm(x.date):'',done:x.done,photo:x.photo||'',createdAt:typeof x.createdAt==='string'?x.createdAt:'',completedAt:typeof x.completedAt==='string'?x.completedAt:''};if(debt){r.type=x.type;r.amount=x.amount}return r;};
- return {version:2,tasks:data.tasks.map(x=>clean(x,false)),debts:data.debts.map(x=>clean(x,true))};
+ if(x.reminderAt && (!Number.isSafeInteger(x.reminderAt)||x.reminderAt<0))throw Error('یادآور نامعتبر');
+ const r={reminderAt:x.reminderAt||0,id:x.id,title:x.title,date:x.date?dateNorm(x.date):'',done:x.done,photo:x.photo||'',createdAt:typeof x.createdAt==='string'?x.createdAt:'',completedAt:typeof x.completedAt==='string'?x.completedAt:''};if(debt){r.type=x.type;r.amount=x.amount}return r;};
+ const inbox=(data.inbox||[]).map(x=>{if(!x||typeof x.id!=='string'||typeof x.text!=='string'||x.text.length>20000||typeof x.processed!=='boolean'||(x.photo&&!/^data:image\/(jpeg|png|webp);base64,[A-Za-z0-9+/=]+$/.test(x.photo))||(x.photo||'').length>2000000)throw Error('پیام ورودی نامعتبر');return {id:x.id,text:x.text,photo:x.photo||'',processed:x.processed,recordId:typeof x.recordId==='string'?x.recordId:'',receivedAt:typeof x.receivedAt==='string'?x.receivedAt:''};});
+ if(inbox.length>1000||new Set(inbox.map(x=>x.id)).size!==inbox.length)throw Error('صندوق ورودی نامعتبر');
+ return {version:2,tasks:data.tasks.map(x=>clean(x,false)),debts:data.debts.map(x=>clean(x,true)),inbox};
 }
 function records(db){return [...db.tasks.map(x=>({...x,kind:'tasks'})),...db.debts.map(x=>({...x,kind:x.type}))];}
 function filter(db,{kind='all',status='all',from='',to='',query=''}={}){return records(db).filter(x=>(kind==='all'||x.kind===kind)&&(status==='all'||(status==='done'?x.done:status==='open'?!x.done:!x.done&&x.date&&x.date<today()))&&(!from||x.date&&x.date>=from)&&(!to||x.date&&x.date<=to)&&(!query||norm(x.title).includes(norm(query))));}
 function summary(rows){return {total:rows.length,done:rows.filter(x=>x.done).length,open:rows.filter(x=>!x.done).length,receive:rows.filter(x=>x.kind==='receive'&&!x.done).reduce((a,x)=>a+BigInt(x.amount),0n).toString(),pay:rows.filter(x=>x.kind==='pay'&&!x.done).reduce((a,x)=>a+BigInt(x.amount),0n).toString()};}
+function money(value){const s=norm(value);return /^\d+$/.test(s)?new Intl.NumberFormat('fa-IR').format(BigInt(s)):'';}
+function period(mode,base=today()){const [y,m]=base.split('/').map(Number);if(mode==='day')return {from:base,to:base};if(mode==='week'){const from=addDays(base,-((gregorian(base).getUTCDay()+1)%7));return {from,to:addDays(from,6)};}if(mode==='month')return {from:dateKey(y,m,1),to:dateKey(y,m,monthDays(y,m))};return {from:'',to:''};}
+function financial(rows){const sum=(kind,done)=>rows.filter(x=>x.kind===kind&&x.done===done).reduce((a,x)=>a+BigInt(x.amount),0n).toString();return {receiveDone:sum('receive',true),receiveOpen:sum('receive',false),payDone:sum('pay',true),payOpen:sum('pay',false)};}
+function reminder(date,time){if(!validDate(date)||!/^\d{2}:\d{2}$/.test(time))return 0;const [h,m]=time.split(':').map(Number);if(h>23||m>59)return 0;const g=gregorian(date);return new Date(g.getUTCFullYear(),g.getUTCMonth(),g.getUTCDate(),h,m).getTime();}
 function csv(rows){const cell=v=>'"'+String(v??'').replace(/^[=+@-]/,"'$&").replace(/"/g,'""')+'"';return '\uFEFF'+[['نوع','عنوان','سررسید شمسی','مبلغ ریال','وضعیت','زمان تکمیل'],...rows.map(x=>[x.kind==='tasks'?'کار':x.kind==='pay'?'پرداختنی':'دریافتنی',x.title,x.date,x.amount??'',x.done?'انجام‌شده':'انجام‌نشده',x.completedAt||''])].map(r=>r.map(cell).join(',')).join('\r\n');}
-const api={months,norm,parts,today,dateKey,monthDays,validDate,dateNorm,gregorian,addDays,numberWords,draft,validate,records,filter,summary,csv};
+const api={money,period,financial,reminder,months,norm,parts,today,dateKey,monthDays,validDate,dateNorm,gregorian,addDays,numberWords,draft,validate,records,filter,summary,csv};
 if(typeof module!=='undefined')module.exports=api;else root.HamyarCore=api;
 })(typeof window!=='undefined'?window:globalThis);

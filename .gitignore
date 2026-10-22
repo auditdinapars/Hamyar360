@@ -6,3 +6,5 @@ local.properties
 *.jks
 *.keystore
 *.apk
+
+app/src/main/assets/tessdata/*.traineddata

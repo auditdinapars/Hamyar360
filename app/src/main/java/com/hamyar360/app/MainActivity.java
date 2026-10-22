@@ -42,6 +42,7 @@ public class MainActivity extends Activity {
   private File cameraFile;
   private Uri cameraUri;
   private String pendingEvent;
+  private final java.util.ArrayList<String> events=new java.util.ArrayList<>();
   private boolean pageReady, externalBusy;
   private final ExecutorService worker=Executors.newSingleThreadExecutor();
 
@@ -64,7 +65,11 @@ public class MainActivity extends Activity {
       @Override public boolean shouldOverrideUrlLoading(WebView view,String url){return !HOME.equals(url);}
     });
     web.addJavascriptInterface(new Object(){
-      @JavascriptInterface public void ready(){runOnUiThread(()->{pageReady=true;if(pendingEvent!=null){String event=pendingEvent;pendingEvent=null;send(event);}});}
+      @JavascriptInterface public void ready(){runOnUiThread(()->{pageReady=true;deliverInbox();for(String e:events)send(e);events.clear();if(pendingEvent!=null){String event=pendingEvent;pendingEvent=null;send(event);}});}
+      @JavascriptInterface public void readPhoto(String data){worker.execute(()->{try{String text=OfflineOcr.read(MainActivity.this,data);runOnUiThread(()->event("ocr","text",text));}catch(Throwable ex){runOnUiThread(()->event("ocrError","message","خواندن عکس ممکن نشد؛ عکس واضح‌تر و مستقیم بگیرید."));}});}
+      @JavascriptInterface public void syncReminders(String json){worker.execute(()->ReminderReceiver.sync(MainActivity.this,json));}
+      @JavascriptInterface public void requestNotifications(){runOnUiThread(()->{if(android.os.Build.VERSION.SDK_INT>=33&&checkSelfPermission(android.Manifest.permission.POST_NOTIFICATIONS)!=android.content.pm.PackageManager.PERMISSION_GRANTED)requestPermissions(new String[]{android.Manifest.permission.POST_NOTIFICATIONS},916);});}
+      @JavascriptInterface public void ackInbox(String ids){worker.execute(()->{try{org.json.JSONArray ack=new org.json.JSONArray(ids),a=inbox(),keep=new org.json.JSONArray();java.util.HashSet<String> remove=new java.util.HashSet<>();for(int i=0;i<ack.length();i++)remove.add(ack.getString(i));for(int i=0;i<a.length();i++)if(!remove.contains(a.getJSONObject(i).getString("id")))keep.put(a.getJSONObject(i));saveInbox(keep);}catch(Exception ignored){}});}
       @JavascriptInterface public void startVoice(){runOnUiThread(()->launchVoice());}
       @JavascriptInterface public void takePhoto(){runOnUiThread(()->launchPhoto());}
       @JavascriptInterface public void saveDocument(String text,String mime,String name){runOnUiThread(()->saveText(text,mime,name));}
@@ -78,10 +83,11 @@ public class MainActivity extends Activity {
       }
     });
     web.loadUrl(HOME);
+    if(state==null)acceptShare(getIntent());
   }
   private boolean beginExternal(){if(externalBusy){error("ابتدا عملیات جاری را تمام کنید");return false;}externalBusy=true;return true;}
   private void launchVoice(){if(beginExternal())voiceInput.start();}
-  @Override public void onRequestPermissionsResult(int request,String[] permissions,int[] results){super.onRequestPermissionsResult(request,permissions,results);voiceInput.onPermissionResult(request,results);}
+  @Override public void onRequestPermissionsResult(int request,String[] permissions,int[] results){super.onRequestPermissionsResult(request,permissions,results);voiceInput.onPermissionResult(request,results);if(request==916&&(results.length==0||results[0]!=android.content.pm.PackageManager.PERMISSION_GRANTED))error("اجازهٔ اعلان داده نشد؛ یادآور ذخیره شده اما اعلان نمایش داده نمی‌شود. در تنظیمات گوشی اعلان‌های همیار را فعال کنید.");}
   @Override protected void onStop(){voiceInput.onStop();super.onStop();}
   private void launchPhoto(){
     if(!beginExternal())return;
@@ -119,10 +125,22 @@ public class MainActivity extends Activity {
     ByteArrayOutputStream out=new ByteArrayOutputStream();bitmap.compress(Bitmap.CompressFormat.JPEG,75,out);bitmap.recycle();
     if(out.size()>1400000)throw new Exception("image too large");return "data:image/jpeg;base64,"+Base64.encodeToString(out.toByteArray(),Base64.NO_WRAP);
   }
+  @Override protected void onNewIntent(Intent intent){super.onNewIntent(intent);setIntent(intent);acceptShare(intent);}
+  private String readInboxFile()throws Exception{try(java.io.InputStream in=new java.io.FileInputStream(new File(getFilesDir(),"inbox.json"));ByteArrayOutputStream out=new ByteArrayOutputStream()){byte[] buf=new byte[8192];int n;while((n=in.read(buf))!=-1)out.write(buf,0,n);return out.toString("UTF-8");}}
+  private org.json.JSONArray inbox(){try{return new org.json.JSONArray(readInboxFile());}catch(Exception e){return new org.json.JSONArray();}}
+  private void saveInbox(org.json.JSONArray a)throws Exception{android.util.AtomicFile f=new android.util.AtomicFile(new File(getFilesDir(),"inbox.json"));java.io.FileOutputStream out=f.startWrite();try{out.write(a.toString().getBytes(StandardCharsets.UTF_8));f.finishWrite(out);}catch(Exception ex){f.failWrite(out);throw ex;}}
+  private void deliverInbox(){worker.execute(()->{try{org.json.JSONObject e=new org.json.JSONObject();e.put("type","inbox");org.json.JSONArray a=inbox();if(a.length()==0)return;e.put("items",a);runOnUiThread(()->send(e.toString()));}catch(Exception ignored){}});}
+  private void acceptShare(Intent intent){if(intent==null||(!Intent.ACTION_SEND.equals(intent.getAction())&&!Intent.ACTION_SEND_MULTIPLE.equals(intent.getAction())))return;
+    final String text=String.valueOf(intent.getCharSequenceExtra(Intent.EXTRA_TEXT)==null?"":intent.getCharSequenceExtra(Intent.EXTRA_TEXT));final java.util.ArrayList<Uri> uris=new java.util.ArrayList<>();
+    if(Intent.ACTION_SEND_MULTIPLE.equals(intent.getAction())){java.util.ArrayList<Uri> list=intent.getParcelableArrayListExtra(Intent.EXTRA_STREAM);if(list!=null)uris.addAll(list);}else{Uri uri=intent.getParcelableExtra(Intent.EXTRA_STREAM);if(uri!=null)uris.add(uri);}
+    intent.setAction(Intent.ACTION_MAIN);
+    worker.execute(()->{try{org.json.JSONArray a=inbox();if(a.length()+Math.max(1,uris.size())>1000||uris.size()>10)throw new Exception("limit");for(int i=0;i<Math.max(1,uris.size());i++){String photo="";if(!uris.isEmpty()){Uri uri=uris.get(i);if(!"content".equals(uri.getScheme()))throw new Exception("uri");File f=File.createTempFile("share-",".jpg",getCacheDir());try{try(java.io.InputStream in=getContentResolver().openInputStream(uri);OutputStream out=new java.io.FileOutputStream(f)){if(in==null)throw new Exception("stream");byte[] buf=new byte[8192];int n,total=0;while((n=in.read(buf))!=-1){total+=n;if(total>25*1024*1024)throw new Exception("size");out.write(buf,0,n);}}photo=encodePhoto(f);}finally{f.delete();}}
+      org.json.JSONObject x=new org.json.JSONObject();x.put("id",java.util.UUID.randomUUID().toString());x.put("text",text.substring(0,Math.min(text.length(),20000)));x.put("photo",photo);x.put("receivedAt",new java.text.SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX",java.util.Locale.US).format(new java.util.Date()));a.put(x);}saveInbox(a);runOnUiThread(()->{if(pageReady)deliverInbox();});}catch(Exception ex){runOnUiThread(()->error("دریافت پیام ناموفق بود؛ متن یا حداکثر ۱۰ عکس با حجم کمتر از ۲۵ مگابایت به اشتراک بگذارید."));}});
+  }
   private void cleanCamera(){if(cameraUri!=null)revokeUriPermission(cameraUri,Intent.FLAG_GRANT_WRITE_URI_PERMISSION|Intent.FLAG_GRANT_READ_URI_PERMISSION);if(cameraFile!=null)cameraFile.delete();cameraFile=null;cameraUri=null;}
   private void error(String text){Toast.makeText(this,text,Toast.LENGTH_LONG).show();event("error","message",text);}
   private void event(String type,String key,String value){try{JSONObject event=new JSONObject();event.put("type",type);if(key!=null)event.put(key,value);send(event.toString());}catch(Exception ignored){}}
-  private void send(String json){if(!pageReady){pendingEvent=json;return;}if(web!=null&&!isDestroyed())web.evaluateJavascript("window.onNativeResult("+json+");",null);}
+  private void send(String json){if(!pageReady){events.add(json);return;}if(web!=null&&!isDestroyed())web.evaluateJavascript("window.onNativeResult("+json+");",null);}
   @Override protected void onSaveInstanceState(Bundle state){super.onSaveInstanceState(state);if(cameraFile!=null)state.putString("cameraFile",cameraFile.getPath());if(cameraUri!=null)state.putString("cameraUri",cameraUri.toString());state.putString("pendingEvent",pendingEvent);state.putBoolean("externalBusy",externalBusy && (voiceInput==null || !voiceInput.isActive()));}
   @Override public void onBackPressed(){if(web!=null)web.evaluateJavascript("(()=>{const d=Array.from(document.querySelectorAll('dialog[open]')).pop();if(d){if(d.id==='editor')closeEditor();else d.close();return true;}if(active!=='home'){show('home');return true;}return false;})()",handled->{if("false".equals(handled))MainActivity.super.onBackPressed();});else super.onBackPressed();}
   @Override protected void onDestroy(){if(voiceInput!=null)voiceInput.destroy();if(uploadCallback!=null){uploadCallback.onReceiveValue(null);uploadCallback=null;}worker.shutdown();if(web!=null){web.removeJavascriptInterface("HamyarAndroid");web.destroy();web=null;}super.onDestroy();}

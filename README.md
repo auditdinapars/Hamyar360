@@ -1,29 +1,16 @@
-# همیار ۳۶۰ — نسخهٔ آزمایشی ۰.۵.۱
+# همیار ۳۶۰ — نسخه ۰.۶.۰
 
-Android app in Persian with separate task, receivable and payable menus.
+برنامهٔ آفلاین برای کارها، دریافتنی و پرداختنی با تقویم شمسی، تم نارنجی و نشان حاصل نوین.
 
-## Features
+- ثبت و ویرایش مبالغ با ارقام فارسی و جداکننده سه‌رقمی؛ همه مبالغ به ریال.
+- گزارش وصول‌شده/نشده و پرداخت‌شده/نشده: روز، هفته از شنبه، ماه شمسی یا بازه دلخواه. مبنای بازه سررسید است.
+- یادآور اختیاری تاریخ و ساعت، لغو پس از تکمیل/حذف، بازسازی پس از روشن شدن گوشی. از اعلان و alarm غیردقیق استفاده می‌شود و محدودیت باتری ممکن است باعث تأخیر شود.
+- دریافت متن و عکس از منوی اشتراک‌گذاری پیام‌رسان‌ها؛ پیش‌نویس خودکار و تأیید قابل ویرایش؛ نشان پردازش‌شده فقط پس از ذخیره موفق.
+- خواندن فارسی و انگلیسی عکس روی گوشی با Tesseract، بدون سرویس ابری یا اینترنت زمان اجرا. مدل‌ها هنگام ساخت با checksum کنترل و در APK بسته‌بندی می‌شوند. دقت به کیفیت و چیدمان عکس وابسته است؛ بررسی نتیجه لازم است. مبلغ بدون واحد پس از کلمه مبلغ، ریال فرض می‌شود.
+- گفتار با سرویس گوشی و مجوز میکروفن؛ وقفه‌های زودهنگام تا ۴۵ ثانیه تلاش مجدد دارند. پردازش گفتار ممکن است به اینترنت سرویس گوشی نیاز داشته باشد.
 
-- Tasks, receivables and payables with editing, deletion, completion and reopening.
-- Persian (Jalali) month calendar, date picker and per-day due records.
-- Reports by type, completed/open/overdue status and due-date range; CSV export.
-- Voice buttons in every menu and in the editor request Hamyar's microphone permission and open an in-app Persian speech session using the phone's recognition service. Recognized text becomes an editable draft with pattern-based title, amount and date extraction. Confirmation is required; no audio recording is stored. Recognition availability and internet requirements depend on the installed speech provider.
-- Camera buttons launch the phone camera. The confirmed photo is compressed and attached to the record. This version does not perform OCR or infer fields from images.
-- IndexedDB storage for records and photos, with automatic migration from the original localStorage database. JSON backup/restore includes photos. Original data is left in place during migration.
-- Completion timestamps for newly completed items. Older completed items retain their status but have no historical completion timestamp.
+ساخت: JDK17، Gradle8.9، Android SDK35؛ `gradle :app:assembleDebug :app:lintDebug :app:testDebugUnitTest`. آزمون منطق: `node --test tests/core.test.cjs`.
 
-## Build and APK
+پیش از حذف نسخه قبلی از تنظیمات پشتیبان بگیرید. خروجی CI با کلید آزمایشی امضا می‌شود و ممکن است مستقیماً روی نسخه قبلی نصب نشود. اطلاعات و پشتیبان‌ها محلی و رمزگذاری‌نشده هستند.
 
-Actions > Build Android APK runs core tests, Android compilation and lint. After a successful run, download the `Hamyar360-debug-apk` artifact and extract `app-debug.apk`. See [BUILD-STATUS.md](BUILD-STATUS.md) for requirements and verification limits.
-
-## Upgrade and data
-
-Back up your data before reinstalling. This is a debug build; fresh CI runners may use a different signing key, preventing in-place updates. Never uninstall an existing app before exporting its backup. Clearing app data removes records and attachments. JSON backups and local app data are not encrypted.
-
-Automated reminders, cloud sync and OCR are not included. Test camera, Persian recognition, backups and installation on the target phone before relying on the prototype.
-
-## Voice permission troubleshooting (0.5.1)
-
-Tap the voice button and grant Hamyar microphone access while using the app. If denied, the app explains the requirement and offers its app settings. The recognizer now runs inside Hamyar instead of launching Google's external recognition activity. Recognition stops when the app goes into the background, on cancellation, after results/errors, or after 45 seconds without a result.
-
-If the service reports insufficient permission despite Hamyar having microphone permission, check the microphone permission of the speech-provider app named by your phone and the system microphone privacy toggle. The app offers the installed-app settings screen for this case. It cannot grant another app's permissions. Network, unavailable Persian language, busy microphone and no-speech errors are shown separately. Actual service behavior still requires testing on the target phone.
+لوگو از https://haselnovin.com/wp-content/uploads/2019/09/hasel-novin.svg و آیکون از https://haselnovin.com/wp-content/uploads/2019/08/Asset-3.png، متعلق به شرکت حاصل نوین.

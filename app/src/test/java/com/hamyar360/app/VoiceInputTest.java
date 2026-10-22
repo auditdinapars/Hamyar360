@@ -92,5 +92,9 @@ public class VoiceInputTest {
   @Test public void unresponsiveProviderTimesOutAndReleasesMicrophone(){
     ShadowSpeechRecognizer recognizer=startGranted();shadowOf(Looper.getMainLooper()).idleFor(Duration.ofSeconds(46));assertTrue(recognizer.isDestroyed());assertTrue(error.contains("پاسخی"));
   }
+  @Test public void earlySilenceRestartsWithoutClosingTheSession(){
+    ShadowSpeechRecognizer first=startGranted();first.triggerOnError(SpeechRecognizer.ERROR_NO_MATCH);assertTrue(voice.isActive());assertNull(error);
+    shadowOf(Looper.getMainLooper()).idleFor(Duration.ofMillis(600));assertTrue(first.isDestroyed());assertTrue(voice.isActive());
+    voice.onStop();assertFalse(voice.isActive());
+  }
 }
-

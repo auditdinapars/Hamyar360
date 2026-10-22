@@ -26,12 +26,14 @@ final class VoiceInput {
   private AlertDialog dialog;
   private boolean active, destroyed;
   private int generation;
+  private long started;
+  private final Runnable retry=()->{if(active&&!destroyed)listen();};
   private final Runnable timeout=()->fail("پاسخی از سرویس گفتار نرسید؛ اتصال اینترنت و سرویس گفتار گوشی را بررسی کنید.");
 
   VoiceInput(Activity activity,Listener listener){this.activity=activity;this.listener=listener;}
   void start(){
     if(destroyed||active)return;
-    active=true;
+    active=true;started=android.os.SystemClock.elapsedRealtime();
     if(activity.checkSelfPermission(Manifest.permission.RECORD_AUDIO)==PackageManager.PERMISSION_GRANTED){listen();return;}
     boolean asked=activity.getPreferences(Activity.MODE_PRIVATE).getBoolean("microphoneAsked",false);
     if(asked&&!activity.shouldShowRequestPermissionRationale(Manifest.permission.RECORD_AUDIO)){
@@ -54,6 +56,9 @@ final class VoiceInput {
     else{finish();permissionHelp(false);}
   }
   private void listen(){
+    if(started==0)started=android.os.SystemClock.elapsedRealtime();
+    if(recognizer!=null){++generation;recognizer.destroy();recognizer=null;}
+    if(dialog!=null){dialog.dismiss();dialog=null;}
     if(activity.checkSelfPermission(Manifest.permission.RECORD_AUDIO)!=PackageManager.PERMISSION_GRANTED){finish();permissionHelp(false);return;}
     if(!SpeechRecognizer.isRecognitionAvailable(activity)){fail("سرویس تشخیص گفتار روی گوشی فعال نیست؛ یک سرویس سازگار با فارسی را نصب یا فعال کنید.");return;}
     final int session=++generation;
@@ -66,7 +71,7 @@ final class VoiceInput {
         @Override public void onRmsChanged(float rms){}
         @Override public void onBufferReceived(byte[] buffer){}
         @Override public void onEndOfSpeech(){if(current()&&dialog!=null){dialog.setMessage("در حال تبدیل گفتار به متن…");dialog.getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(false);}}
-        @Override public void onError(int code){if(!current())return;if(code==SpeechRecognizer.ERROR_INSUFFICIENT_PERMISSIONS){boolean provider=activity.checkSelfPermission(Manifest.permission.RECORD_AUDIO)==PackageManager.PERMISSION_GRANTED;finish();permissionHelp(provider);}else fail(message(code));}
+        @Override public void onError(int code){if(!current())return;if(code==SpeechRecognizer.ERROR_INSUFFICIENT_PERMISSIONS){boolean provider=activity.checkSelfPermission(Manifest.permission.RECORD_AUDIO)==PackageManager.PERMISSION_GRANTED;finish();permissionHelp(provider);}else if((code==SpeechRecognizer.ERROR_NO_MATCH||code==SpeechRecognizer.ERROR_SPEECH_TIMEOUT)&&android.os.SystemClock.elapsedRealtime()-started<45000){if(dialog!=null)dialog.setMessage("هنوز گوش می‌دهم؛ فرمان خود را بیان کنید…");++generation;handler.removeCallbacks(timeout);handler.postDelayed(retry,500);}else fail(message(code));}
         @Override public void onResults(Bundle results){if(!current())return;ArrayList<String> texts=results.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION);String text=texts!=null&&!texts.isEmpty()?texts.get(0):null;finish();if(text!=null&&!text.trim().isEmpty())listener.result(text);else listener.error("گفتار تشخیص داده نشد؛ دوباره واضح‌تر صحبت کنید.");}
         @Override public void onPartialResults(Bundle results){}
         @Override public void onEvent(int type,Bundle params){}
@@ -82,6 +87,9 @@ final class VoiceInput {
       intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE,"fa-IR");
       intent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS,1);
       intent.putExtra(RecognizerIntent.EXTRA_PARTIAL_RESULTS,false);
+      intent.putExtra(RecognizerIntent.EXTRA_SPEECH_INPUT_MINIMUM_LENGTH_MILLIS,15000L);
+      intent.putExtra(RecognizerIntent.EXTRA_SPEECH_INPUT_COMPLETE_SILENCE_LENGTH_MILLIS,4000L);
+      intent.putExtra(RecognizerIntent.EXTRA_SPEECH_INPUT_POSSIBLY_COMPLETE_SILENCE_LENGTH_MILLIS,3000L);
       handler.postDelayed(timeout,45000);
       recognizer.startListening(intent);
     }catch(SecurityException ex){finish();permissionHelp(activity.checkSelfPermission(Manifest.permission.RECORD_AUDIO)==PackageManager.PERMISSION_GRANTED);}
@@ -107,12 +115,12 @@ final class VoiceInput {
   }
   private void fail(String message){if(!active)return;finish();listener.error(message);}
   private void finish(){
-    active=false;++generation;handler.removeCallbacks(timeout);
+    active=false;++generation;handler.removeCallbacks(timeout);handler.removeCallbacks(retry);
     if(recognizer!=null){SpeechRecognizer old=recognizer;recognizer=null;try{old.cancel();}catch(Exception ignored){}old.destroy();}
     if(dialog!=null){dialog.dismiss();dialog=null;}
     listener.finished();
   }
-  void onStop(){if(recognizer!=null)finish();}
+  void onStop(){if(active&&recognizer!=null)finish();}
   boolean isActive(){return active;}
   void destroy(){destroyed=true;finish();}
 }

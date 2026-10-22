@@ -2,13 +2,33 @@ plugins { id 'com.android.application' }
 android {
     namespace 'com.hamyar360.app'
     compileSdk 35
-    defaultConfig { applicationId 'com.hamyar360.app'; minSdk 24; targetSdk 35; versionCode 4; versionName '0.5.1' }
+    defaultConfig { applicationId 'com.hamyar360.app'; minSdk 24; targetSdk 35; versionCode 5; versionName '0.6.0' }
     compileOptions { sourceCompatibility JavaVersion.VERSION_17; targetCompatibility JavaVersion.VERSION_17 }
     testOptions { unitTests.includeAndroidResources = true }
 }
 
-dependencies { implementation 'androidx.core:core:1.13.1' }
+dependencies { implementation 'androidx.core:core:1.13.1'; implementation 'cz.adaptech.tesseract4android:tesseract4android:4.9.0' }
 dependencies {
     testImplementation 'junit:junit:4.13.2'
     testImplementation 'org.robolectric:robolectric:4.14.1'
 }
+
+// Models are checksum-verified at build time and bundled for offline use.
+def ocrModels = [
+    'fas': 'db1c0a91208aff00d3cf1ed2c1d23f76419afd5f024688b4f71adc3f2ce4a505',
+    'eng': '7d4322bd2a7749724879683fc3912cb542f19906c83bcc1a52132556427170b2',
+ ]
+tasks.register('prepareOcrModels') {
+    doLast {
+        ocrModels.each { lang, checksum ->
+            def target = file("src/main/assets/tessdata/${lang}.traineddata")
+            target.parentFile.mkdirs()
+            if (!target.exists()) {
+                new URL("https://raw.githubusercontent.com/tesseract-ocr/tessdata_fast/4.1.0/${lang}.traineddata").withInputStream { input -> target.withOutputStream { out -> out << input } }
+            }
+            def actual = java.security.MessageDigest.getInstance('SHA-256').digest(target.bytes).encodeHex().toString()
+            if (actual != checksum) throw new GradleException("OCR model checksum mismatch: ${lang}")
+        }
+    }
+}
+tasks.named('preBuild').configure { dependsOn 'prepareOcrModels' }

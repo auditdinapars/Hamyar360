@@ -35,3 +35,18 @@ test('CSV quotes titles and neutralizes formula injection',()=>{
  const text=C.csv([{kind:'tasks',title:'=SUM(1,2)',date:'',done:false}]);
  assert.ok(text.includes('"\'=SUM(1,2)"'));assert.ok(text.startsWith('\uFEFF'));
 });
+
+test('financial input groups Persian/Arabic digits without precision loss',()=>{
+ assert.equal(C.money('١٢٣٤٥٦٧٨٩'),'۱۲۳٬۴۵۶٬۷۸۹');assert.equal(C.norm(C.money('9007199254740991')),'9007199254740991');assert.equal(C.money(''), '');
+});
+test('financial totals split paid/open and periods honor Persian boundaries',()=>{
+ assert.deepEqual(C.financial(C.records(C.validate(db))),{receiveDone:'300',receiveOpen:'0',payDone:'0',payOpen:'200'});
+ assert.deepEqual(C.period('month','1403/12/15'),{from:'1403/12/01',to:'1403/12/30'});
+ const week=C.period('week','1405/01/01');assert.equal(week.from,'1405/01/01');assert.equal(week.to,'1405/01/07');
+});
+test('inbox backups retain processed linkage; reminders validate and migrate',()=>{
+ const d=C.validate({...db,inbox:[{id:'m',text:'فردا مبلغ ۲۰۰۰۰ ریال پرداخت کنم',photo:'',processed:true,recordId:'p'}]});assert.equal(d.inbox[0].recordId,'p');assert.equal(d.tasks[0].reminderAt,0);
+ assert.equal(C.draft(d.inbox[0].text,'auto','1405/08/01').amount,20000);
+ assert.ok(C.reminder('1405/08/01','09:30')>0);assert.equal(C.reminder('1405/08/01','29:00'),0);
+ assert.throws(()=>C.validate({...db,inbox:[{id:'x',text:'x',processed:false,photo:'javascript:x'}]}));
+});
