@@ -50,7 +50,7 @@ jobs:
           arch: x86_64
           profile: pixel_6
           disable-animations: true
-          script: bash tests/device-tests.sh
+          script: gradle --no-daemon :app:connectedDebugAndroidTest
       - uses: actions/upload-artifact@v4
         with:
           name: Hamyar360-debug-apk
@@ -70,6 +70,5 @@ jobs:
             app/build/test-results/testDebugUnitTest/*.xml
             app/build/reports/androidTests/**
             app/build/outputs/androidTest-results/**
-            app/build/ocr-test.png
           if-no-files-found: ignore
           retention-days: 14
