@@ -16,6 +16,9 @@ final class OfflineOcr {
     Bitmap bitmap=BitmapFactory.decodeByteArray(bytes,0,bytes.length,options);TessBaseAPI tess=new TessBaseAPI();
     try{
       if(!tess.init(base.getAbsolutePath(),"fas+eng"))throw new IOException("init");
+      // Tesseract #4582: dot-heavy Persian lines can be rejected as noise.
+      tess.setVariable("textord_noise_rejrows","0");
+      tess.setVariable("textord_noise_rejwords","0");
       tess.setPageSegMode(TessBaseAPI.PageSegMode.PSM_AUTO);tess.setImage(bitmap);String text=tess.getUTF8Text();
       // Sparse-text segmentation omits RTL lines on bilingual documents.
       // Retry as a text block when automatic layout found no Persian text.
