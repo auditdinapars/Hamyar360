@@ -80,7 +80,7 @@ public class VoiceInputTest {
     ShadowSpeechRecognizer recognizer=startGranted();recognizer.triggerOnError(SpeechRecognizer.ERROR_INSUFFICIENT_PERMISSIONS);
     assertTrue(error.contains("همیار مجوز میکروفن دارد"));assertTrue(recognizer.isDestroyed());
     ShadowAlertDialog.getLatestAlertDialog().getButton(AlertDialog.BUTTON_POSITIVE).performClick();
-    assertEquals(Settings.ACTION_MANAGE_APPLICATIONS,shadowOf(activity).getNextStartedActivity().getAction());
+    assertEquals(Settings.ACTION_MANAGE_APPLICATIONS_SETTINGS,shadowOf(activity).getNextStartedActivity().getAction());
   }
   @Test public void backgroundingCancelsRecognitionAndIgnoresLateResults(){
     ShadowSpeechRecognizer recognizer=startGranted();voice.onStop();assertTrue(recognizer.isDestroyed());

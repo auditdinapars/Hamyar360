@@ -102,7 +102,7 @@ final class VoiceInput {
     String text=provider?"همیار مجوز میکروفن دارد، اما سرویس گفتار اجازهٔ دسترسی نمی‌دهد. در تنظیمات گوشی، برنامه‌ای را که پیام خطا نام برده است (مثلاً Google یا سرویس گفتار گوگل) باز کنید و مجوز میکروفن آن را بررسی کنید. کلید سراسری میکروفن گوشی نیز باید روشن باشد.":"برای فرمان صوتی، مجوز میکروفن همیار را روی «هنگام استفاده از برنامه» بگذارید. ثبت دستی همچنان در دسترس است.";
     listener.error(text);
     dialog=new AlertDialog.Builder(activity).setTitle(provider?"مجوز سرویس گفتار":"مجوز میکروفن همیار").setMessage(text)
-      .setPositiveButton("بازکردن تنظیمات",(d,w)->{try{Intent intent=provider?new Intent(Settings.ACTION_MANAGE_APPLICATIONS):new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS,Uri.parse("package:"+activity.getPackageName()));activity.startActivity(intent);}catch(Exception ex){listener.error("تنظیمات گوشی را دستی باز کنید و مجوز میکروفن را بررسی کنید.");}})
+      .setPositiveButton("بازکردن تنظیمات",(d,w)->{try{Intent intent=provider?new Intent(Settings.ACTION_MANAGE_APPLICATIONS_SETTINGS):new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS,Uri.parse("package:"+activity.getPackageName()));activity.startActivity(intent);}catch(Exception ex){listener.error("تنظیمات گوشی را دستی باز کنید و مجوز میکروفن را بررسی کنید.");}})
       .setNegativeButton("فعلاً نه",null).show();
   }
   private void fail(String message){if(!active)return;finish();listener.error(message);}
