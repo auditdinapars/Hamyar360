@@ -14,8 +14,10 @@ import java.io.ByteArrayOutputStream;
 public class DeviceFeaturesTest {
   @Test public void bundledOcrReadsDateAndAmountWithoutNetwork()throws Exception{
     Context context=InstrumentationRegistry.getInstrumentation().getTargetContext();
-    Bitmap b=Bitmap.createBitmap(1500,480,Bitmap.Config.ARGB_8888);Canvas canvas=new Canvas(b);canvas.drawColor(Color.WHITE);Paint p=new Paint(Paint.ANTI_ALIAS_FLAG);p.setColor(Color.BLACK);p.setTextSize(65);
-    canvas.drawText("Invoice 1405/08/15",70,120,p);canvas.drawText("Amount 250000 RIAL",70,230,p);canvas.drawText("مبلغ پرداخت",70,350,p);
+    Bitmap b=Bitmap.createBitmap(1500,480,Bitmap.Config.ARGB_8888);Canvas canvas=new Canvas(b);canvas.drawColor(Color.WHITE);android.text.TextPaint p=new android.text.TextPaint(Paint.ANTI_ALIAS_FLAG);p.setColor(Color.BLACK);p.setTextSize(65);
+    String sample="Invoice 1405/08/15\nAmount 250000 RIAL\nمبلغ پرداخت";
+    android.text.StaticLayout layout=android.text.StaticLayout.Builder.obtain(sample,0,sample.length(),p,1360).setLineSpacing(25,1).build();
+    canvas.save();canvas.translate(70,40);layout.draw(canvas);canvas.restore();
     ByteArrayOutputStream out=new ByteArrayOutputStream();b.compress(Bitmap.CompressFormat.PNG,100,out);b.recycle();
     String text=OfflineOcr.read(context,"data:image/png;base64,"+Base64.encodeToString(out.toByteArray(),Base64.NO_WRAP));
     assertTrue(text,text.contains("1405"));assertTrue(text,text.contains("250000"));assertTrue(text,text.contains("مبلغ"));
