@@ -2,7 +2,7 @@ plugins { id 'com.android.application' }
 android {
     namespace 'com.hamyar360.app'
     compileSdk 35
-    defaultConfig { applicationId 'com.hamyar360.app'; minSdk 24; targetSdk 35; versionCode 5; versionName '0.6.0' }
+    defaultConfig { applicationId 'com.hamyar360.app'; minSdk 24; targetSdk 35; versionCode 5; versionName '0.6.0'; testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner' }
     compileOptions { sourceCompatibility JavaVersion.VERSION_17; targetCompatibility JavaVersion.VERSION_17 }
     testOptions { unitTests.includeAndroidResources = true }
 }
@@ -11,6 +11,8 @@ dependencies { implementation 'androidx.core:core:1.13.1'; implementation 'cz.ad
 dependencies {
     testImplementation 'junit:junit:4.13.2'
     testImplementation 'org.robolectric:robolectric:4.14.1'
+    androidTestImplementation 'androidx.test:runner:1.6.2'
+    androidTestImplementation 'androidx.test.ext:junit:1.2.1'
 }
 
 // Models are checksum-verified at build time and bundled for offline use.

@@ -37,6 +37,20 @@ jobs:
       - name: Checksum APK
         working-directory: app/build/outputs/apk/debug
         run: sha256sum app-debug.apk > app-debug.apk.sha256
+      - name: Enable emulator acceleration
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+      - name: Test OCR and sharing on Android 16
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 36
+          target: google_apis
+          arch: x86_64
+          profile: pixel_6
+          disable-animations: true
+          script: gradle --no-daemon :app:connectedDebugAndroidTest
       - uses: actions/upload-artifact@v4
         with:
           name: Hamyar360-debug-apk
@@ -54,5 +68,7 @@ jobs:
             app/build/reports/lint-results-debug.*
             app/build/reports/tests/testDebugUnitTest/**
             app/build/test-results/testDebugUnitTest/*.xml
+            app/build/reports/androidTests/**
+            app/build/outputs/androidTest-results/**
           if-no-files-found: ignore
           retention-days: 14
