@@ -67,7 +67,9 @@ public class VoiceInputTest {
   @Test public void denialOffersOwnAppSettingsWithoutStartingRecording(){
     voice.start();voice.onPermissionResult(VoiceInput.MICROPHONE_PERMISSION,new int[]{PackageManager.PERMISSION_DENIED});
     assertNull(ShadowSpeechRecognizer.getLatestSpeechRecognizer());assertTrue(finished>0);assertTrue(error.contains("همیار"));
+    while(shadowOf(activity).getNextStartedActivity()!=null){} // Discard the system permission-request intent.
     ShadowAlertDialog.getLatestAlertDialog().getButton(AlertDialog.BUTTON_POSITIVE).performClick();
+    shadowOf(Looper.getMainLooper()).idle();
     Intent intent=shadowOf(activity).getNextStartedActivity();assertEquals(Settings.ACTION_APPLICATION_DETAILS_SETTINGS,intent.getAction());
     assertEquals("package:"+activity.getPackageName(),intent.getDataString());
   }
@@ -80,6 +82,7 @@ public class VoiceInputTest {
     ShadowSpeechRecognizer recognizer=startGranted();recognizer.triggerOnError(SpeechRecognizer.ERROR_INSUFFICIENT_PERMISSIONS);
     assertTrue(error.contains("همیار مجوز میکروفن دارد"));assertTrue(recognizer.isDestroyed());
     ShadowAlertDialog.getLatestAlertDialog().getButton(AlertDialog.BUTTON_POSITIVE).performClick();
+    shadowOf(Looper.getMainLooper()).idle();
     assertEquals(Settings.ACTION_MANAGE_APPLICATIONS_SETTINGS,shadowOf(activity).getNextStartedActivity().getAction());
   }
   @Test public void backgroundingCancelsRecognitionAndIgnoresLateResults(){
@@ -90,3 +93,4 @@ public class VoiceInputTest {
     ShadowSpeechRecognizer recognizer=startGranted();shadowOf(Looper.getMainLooper()).idleFor(Duration.ofSeconds(46));assertTrue(recognizer.isDestroyed());assertTrue(error.contains("پاسخی"));
   }
 }
+
