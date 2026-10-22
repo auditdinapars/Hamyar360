@@ -22,6 +22,20 @@ final class OfflineOcr {
       tess.setPageSegMode(TessBaseAPI.PageSegMode.PSM_SPARSE_TEXT);tess.setImage(bitmap);
       StringBuilder result=new StringBuilder(text);
       for(String line:tess.getUTF8Text().split("\\r?\\n")){line=line.trim();if(line.matches(".*[\\u0600-\\u06ff].*")&&!text.contains(line))result.append('\n').append(line);}
+      if(!result.toString().matches("(?s).*[\\u0621-\\u06ff].*")){
+        // Wide receipts can put an isolated Persian line in a different column.
+        // Recognize detected horizontal text bands instead of discarding that column.
+        tess.init(base.getAbsolutePath(),"fas+eng");tess.setPageSegMode(TessBaseAPI.PageSegMode.PSM_SINGLE_LINE);tess.setImage(bitmap);
+        int width=bitmap.getWidth(),height=bitmap.getHeight(),start=-1,last=-1,left=width,right=0,bands=0;int[] row=new int[width];
+        for(int y=0;y<=height;y++){
+          int count=0,min=width,max=0;if(y<height){bitmap.getPixels(row,0,width,0,y,width,1);for(int x=0;x<width;x++){int pixel=row[x];if(Color.red(pixel)*299+Color.green(pixel)*587+Color.blue(pixel)*114<150000){count++;min=Math.min(min,x);max=x;}}}
+          if(count>=3&&count<width*.9){if(start<0)start=y;last=y;left=Math.min(left,min);right=Math.max(right,max);}
+          if(start>=0&&(y-last>10||y==height)){
+            if(last-start>=10&&last-start<250&&bands++<40){int x=Math.max(0,left-12),top=Math.max(0,start-12),w=Math.min(width-x,right-left+25),h=Math.min(height-top,last-start+25);tess.setRectangle(x,top,w,h);String line=tess.getUTF8Text().trim();if(line.matches("(?s).*[\\u0621-\\u06ff].*")&&!result.toString().contains(line))result.append('\n').append(line);}
+            start=-1;left=width;right=0;
+          }
+        }
+      }
       return result.toString();
     }finally{tess.recycle();if(bitmap!=null)bitmap.recycle();}
   }
