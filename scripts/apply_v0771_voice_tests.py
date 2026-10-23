@@ -13,6 +13,7 @@ new='''  @Test public void timeoutOffersFallbackAndReleasesPrimaryRecognizer(){
     assertNotNull(ShadowAlertDialog.getLatestAlertDialog());
     assertNotNull(ShadowAlertDialog.getLatestAlertDialog().getButton(AlertDialog.BUTTON_NEUTRAL));
     ShadowAlertDialog.getLatestAlertDialog().getButton(AlertDialog.BUTTON_NEGATIVE).performClick();
+    shadowOf(Looper.getMainLooper()).idle();
     assertFalse(voice.isActive());
   }
   private static android.widget.EditText findEdit(android.view.View v){
@@ -30,11 +31,13 @@ new='''  @Test public void timeoutOffersFallbackAndReleasesPrimaryRecognizer(){
     recognizer.triggerOnError(SpeechRecognizer.ERROR_NETWORK);
     assertTrue(recognizer.isDestroyed());assertTrue(voice.isActive());
     ShadowAlertDialog.getLatestAlertDialog().getButton(AlertDialog.BUTTON_NEUTRAL).performClick();
+    shadowOf(Looper.getMainLooper()).idle();
     AlertDialog manual=ShadowAlertDialog.getLatestAlertDialog();
     android.widget.EditText edit=findEdit(manual.getWindow().getDecorView());
     assertNotNull(edit);
     edit.setText("فردا پرداخت ۲۰ میلیون ریال");
     manual.getButton(AlertDialog.BUTTON_POSITIVE).performClick();
+    shadowOf(Looper.getMainLooper()).idle();
     assertEquals("فردا پرداخت ۲۰ میلیون ریال",result);
     assertFalse(voice.isActive());
   }'''
