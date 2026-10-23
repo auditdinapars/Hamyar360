@@ -1,0 +1,73 @@
+{
+  "README.md": {
+    "before": "8f621620261d060a48cf768226f4bb278dfb99ae21a705931dc063e8ba4277a4",
+    "after": "65754fc1a2245a30878dde6b4819b8ef7de1769fa418fc07019ffb8bbc6a1774",
+    "size": 7234
+  },
+  "docs/HASEL-V077.md": {
+    "before": "",
+    "after": "9f39e87a947566803eff2b6c9b2bf277cf804e1c6dcf82fff2c10d021e3e03f9",
+    "size": 6253
+  },
+  "app/build.gradle": {
+    "before": "4e72337347189f98171dec5aa53df5072c26736a962c00082912a6c1209649cf",
+    "after": "a7cdf30e0d01b5ed8bfa9aae18abd7d2ce928babb29e235def080f555532a8a7",
+    "size": 2011
+  },
+  "app/src/main/assets/index.html": {
+    "before": "a029e46d3f6038ee084ec70eb5086a0367f2b54c2068b206d1412d39f805fef0",
+    "after": "860a4b2ccd9848a277d2034e7253b5a28866c98dda4bd682f716289712953353",
+    "size": 35220
+  },
+  "app/src/main/assets/app.js": {
+    "before": "5cec6bf03e7ee224d61b51bf8ec4bbd64e096cbdf77a3738f3959e5ab806ba2a",
+    "after": "43ec0aa711fb6b2fe72524393bdb0666149fd5e14084efd57c622a4b13090cc8",
+    "size": 42549
+  },
+  "app/src/main/assets/cash-ui.js": {
+    "before": "b4654cd90f2cc5db2d794e4062570081a223a52218a7e0df309d4ace82f40bbc",
+    "after": "a48913493341b0cd1d56702d25aa2e0c12da16cd2d31fa878aa806219cc95364",
+    "size": 27464
+  },
+  "app/src/main/assets/style.css": {
+    "before": "a1c9b0342e1e581a270b1d33b259cbb47cded215a8717a2fe3a6b926150d3c9a",
+    "after": "96be9e049edfd45f0919e7169c81bb08961f958f383b03775645c18d5553b674",
+    "size": 24527
+  },
+  "app/src/main/assets/excel-center.js": {
+    "before": "",
+    "after": "4defcae83b48b9076e305c9efa9a5004a31b7fda2862f8af7362805a0ae0faf9",
+    "size": 10377
+  },
+  "app/src/main/assets/excel-center-ui.js": {
+    "before": "",
+    "after": "f894adc39845b50e3e2a938a4357e5baf2feda819757d15af7ce56a8fd3bad3e",
+    "size": 4761
+  },
+  "app/src/main/java/com/hamyar360/app/MainActivity.java": {
+    "before": "0ae5668d9b36571c20f9e2bd16f32a49cce0866225f580cb74fd9b4fdd1b2a59",
+    "after": "16db524574828ab93d603c4bf1d04162463534072fece389198bbecbd49ee30d",
+    "size": 28905
+  },
+  "app/src/main/java/com/hamyar360/app/SpreadsheetIO.java": {
+    "before": "08cdf02977ddb3b69d39a9b56fac113bae9bd31379e5fcb294e106f598ad7aef",
+    "after": "247cd260c878e001bfa66ffeb1a5f7872d8740d514692208913f112888c944ec",
+    "size": 14629
+  },
+  "app/src/test/java/com/hamyar360/app/EntityXlsxTest.java": {
+    "before": "",
+    "after": "14fddc21fc75d4b2fecdf7ef01ddc1d08a59f41f1e07a8d863460f5be5e67e1f",
+    "size": 3227
+  },
+  "qa/excel_ui_v077.py": {
+    "before": "",
+    "after": "1cfd9ddcac7cb42c2cc5867fb263bd526760fc5780938afaa2ebe8ed445963dc",
+    "size": 4577
+  },
+  "tests/excel-center-v077.test.cjs": {
+    "before": "",
+    "after": "26ca173943c36ece795cc0049c25a7745c8575c2c85b9f524ba0157a9ecffd32",
+    "size": 8407
+  },
+  "__payload_sha256__": "372ed048504cf7bb8dfe1f0bcd806e6cbd023ed1a1cc884228b6720b0922d0fe"
+}
