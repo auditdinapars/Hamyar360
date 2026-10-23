@@ -32,6 +32,8 @@ jobs:
         run: python3 scripts/apply_v076_overlay.py
       - name: Restore checksum-verified Excel center 0.7.7
         run: python3 scripts/apply_v077_overlay.py
+      - name: Restore verified Excel audit persistence
+        run: python3 scripts/apply_v077_core_patch.py
       - name: Assert exact beta version
         run: grep -q "versionName '0.7.7'" app/build.gradle
       - name: Test legacy flows, budget matrix and payment controls
