@@ -2,7 +2,7 @@ name: Build Android APK
 on:
   workflow_dispatch:
   push:
-    branches: [main]
+    branches: [main, feature/cash-control-v071]
   pull_request:
     branches: [main]
 permissions:
@@ -18,7 +18,11 @@ jobs:
       - uses: actions/checkout@v4
       - name: Restore verified Hasel 360 v0.7.0 source
         run: python3 scripts/apply_v070_overlay.py
-      - name: Test legacy flows and cash budgeting engine
+      - name: Restore checksum-verified Hasel 360 v0.7.1 changes
+        run: python3 scripts/apply_v071_delta.py
+      - name: Assert exact beta version
+        run: grep -q "versionName '0.7.1'" app/build.gradle
+      - name: Test legacy flows, budget matrix and payment controls
         run: node --test tests/*.test.cjs
       - uses: actions/setup-java@v4
         with:
@@ -55,7 +59,7 @@ jobs:
           script: gradle --no-daemon :app:connectedDebugAndroidTest
       - uses: actions/upload-artifact@v4
         with:
-          name: Hasel360-v070-beta-debug-apk
+          name: Hasel360-v071-beta-debug-apk
           path: |
             app/build/outputs/apk/debug/app-debug.apk
             app/build/outputs/apk/debug/app-debug.apk.sha256
