@@ -1,0 +1,71 @@
+name: Export tested Hasel 360 v0.7.7.1 source
+on:
+  push:
+    branches: [packaging/v0771-source]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  source:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - name: Restore complete verified Hasel 360 source
+        run: |
+          python3 scripts/apply_v070_overlay.py
+          python3 scripts/apply_v071_delta.py
+          python3 scripts/apply_v072_overlay.py
+          python3 scripts/apply_v073_overlay.py
+          python3 scripts/apply_v074_overlay.py
+          python3 scripts/apply_v075_overlay.py
+          python3 scripts/apply_v076_overlay.py
+          python3 scripts/apply_v077_overlay.py
+          python3 scripts/apply_v077_core_patch.py
+          python3 scripts/apply_v0771_stability.py
+          python3 scripts/apply_v0771_voice_tests.py
+          grep -q "versionName '0.7.7.1'" app/build.gradle
+      - name: Check verified source SHA-256 and 95 tests
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import hashlib
+          expected={
+           'app/src/main/assets/data-sync.js':'568381e1850b19a80fc19fa35db897d3100cf3e46b0c790f2e3bc6506026fa70',
+           'app/src/main/assets/app.js':'a675119bf3adc1e63c1bd936bbb968644ce31f0fb25918d463ef39af6681ce83',
+           'app/src/main/assets/cash-ui.js':'b88ed6e8c1f63505bf144e5fbb90a1f6a60a8adaeba8aa0d72e44756f2d23076',
+           'app/build.gradle':'b60eace9784cb3d57c98911eeaa63d265e4aa52adbe7e43e137bce8dcb0f0f24',
+           'app/src/main/java/com/hamyar360/app/VoiceInput.java':'e7f717eeaf81ee5ab75c28d1dd4b3cc67b27da99212f4389c8c3cff24efbbceb',
+           'app/src/main/java/com/hamyar360/app/MainActivity.java':'38fed3d6cc6c400a998b0a42ad1f1d06fbcc5e9c65fbb28ce7b6940890ebc450',
+          }
+          for name,sha in expected.items():
+           actual=hashlib.sha256(Path(name).read_bytes()).hexdigest()
+           assert actual==sha,(name,actual,sha)
+           print('PASS',name,actual)
+          PY
+          node --test tests/*.test.cjs
+      - name: Package complete restored source without .git or build cache
+        run: |
+          python3 - <<'PY'
+          import zipfile
+          from pathlib import Path
+          root=Path('.')
+          excluded={'.git','build','.gradle','__pycache__','.pytest_cache'}
+          output=Path('/tmp/Hasel360-v0771-stability-source.zip')
+          with zipfile.ZipFile(output,'w',compression=zipfile.ZIP_DEFLATED,compresslevel=7) as z:
+           for p in sorted(root.rglob('*')):
+            if not p.is_file() or any(n in excluded for n in p.parts):continue
+            if p.suffix in {'.pyc'}:continue
+            z.write(p,arcname=Path('Hasel360-v0771-source')/p)
+          print('Packaged',output,output.stat().st_size,'bytes')
+          PY
+          cp /tmp/Hasel360-v0771-stability-source.zip .
+          sha256sum Hasel360-v0771-stability-source.zip > Hasel360-v0771-stability-source.zip.sha256
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Hasel360-v0771-tested-source
+          path: |
+            Hasel360-v0771-stability-source.zip
+            Hasel360-v0771-stability-source.zip.sha256
+          if-no-files-found: error
+          retention-days: 30
