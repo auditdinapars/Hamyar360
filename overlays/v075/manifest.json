@@ -1,0 +1,55 @@
+{
+  "BUILD-STATUS.md": {
+    "before": "7eb5cf3121b65f805c7c13d5733fd5c7d3ea8d39693cf3e9a317d3b76dea3628",
+    "after": "c932cabdc3d4c830f8a64d3a53541712901460ba07e23656ce564615dcf0937a"
+  },
+  "README.md": {
+    "before": "26e3acf8fb13a9af3bb19fb5b02e5fbc66533736e76cb3b4efdd41b3eb7c4ce3",
+    "after": "6858c7603cee8d2a72d8797a9d8a708d5bbe3a25baf76405ee25309b221b030a"
+  },
+  "app/build.gradle": {
+    "before": "840d042895f23d2eae1c63ea59735184953ee308925f5eb39cbd7983bcdb2885",
+    "after": "4c9aba295696cb5768f03b544c8e9656e5c21f92dc836dc8e080b2d262860d6c"
+  },
+  "app/src/main/assets/app.js": {
+    "before": "b67719e6001a1d25868c6ba7d19f01e6615f7774d159c3c731f39edcd51f7d26",
+    "after": "abcf6519d5fff299ca535c110ad121ba8ca0763140e370534c896f0e68809a6b"
+  },
+  "app/src/main/assets/index.html": {
+    "before": "71f22c179f5c19b19f3ec668505412f6fea859d3cd29624d9ccd99df55d06477",
+    "after": "214c2cffdbd91afa1f584b7dc33f1fab40d15c89e50e9564eb10dd02b636ad4b"
+  },
+  "app/src/main/assets/period-analytics.js": {
+    "before": "",
+    "after": "219f1cb7c40b454fde2c0524626b83b8e690062478d5ee71284b16713722c0fb"
+  },
+  "app/src/main/assets/security.js": {
+    "before": "9730282239c5c9a913c6e2067184153d17fcd0350c269a44f23f1088400b5a57",
+    "after": "54dd27af4b807457c1624e84bff6e60c86bf7261052e744c7db58052bd521fda"
+  },
+  "app/src/main/assets/style.css": {
+    "before": "90698c1e06ddf039a576768532f30be248c0d640cba81a1d5b2a8af5edff13d4",
+    "after": "caee3ddf88f74a7ce79be4640a071cf69d1322a068b33c3b54737ba5e1a0560d"
+  },
+  "app/src/main/java/com/hamyar360/app/LocalAuth.java": {
+    "before": "904ecb884be007ce627e869981e8ca96ded5338b1e4ba793897a58194e5d8ea0",
+    "after": "b26ba11607d83e77f70f6093a5cd75885f3718390011fbadca225cac37d05a69"
+  },
+  "app/src/main/java/com/hamyar360/app/MainActivity.java": {
+    "before": "aa1ef3677e80d2e8320a3728f55768d877a41dfd4571a15a6338fecb42519218",
+    "after": "0ae5668d9b36571c20f9e2bd16f32a49cce0866225f580cb74fd9b4fdd1b2a59"
+  },
+  "app/src/test/java/com/hamyar360/app/LocalAuthTest.java": {
+    "before": "f385233d7fff85ce1772c07bf167ab23efaaba42d85a9ff68193c99cbc58bbae",
+    "after": "f332bb8802e32023cb3046c4081227f78d050bf60700b442bf55bc58e2e88f80"
+  },
+  "docs/HASEL-V075.md": {
+    "before": "",
+    "after": "c49b426d5648c3522e4ebb6b1c88d1feb07c8ccc6b3bbf8fce1d8877c7d1ce09"
+  },
+  "tests/period-v075.test.cjs": {
+    "before": "",
+    "after": "b7cbeeb55230b3633dc4b99ef1847567e604e22f7679bb4e789e955fd59be781"
+  },
+  "__payload_sha256__": "c20004f149180b6a5bb7ecc9debadd3ba9031e63049d904e4bf93e3808536d6b"
+}
