@@ -1,0 +1,47 @@
+{
+  "BUILD-STATUS.md": {
+    "before": "4949dfb0078a1a9923aedd311ee243c077964c04fdfa1f69e8293e91ace3c6c2",
+    "after": "7eb5cf3121b65f805c7c13d5733fd5c7d3ea8d39693cf3e9a317d3b76dea3628"
+  },
+  "README.md": {
+    "before": "d88f79daab4687e14444236ea7c1cb96352314daa68423f172f9e5e8cb76bf71",
+    "after": "26e3acf8fb13a9af3bb19fb5b02e5fbc66533736e76cb3b4efdd41b3eb7c4ce3"
+  },
+  "app/build.gradle": {
+    "before": "bd67578c39145fc7c21a8a402f3f528ee09beb94e24bbbf4e0976934ec5a91ac",
+    "after": "840d042895f23d2eae1c63ea59735184953ee308925f5eb39cbd7983bcdb2885"
+  },
+  "app/src/main/assets/app.js": {
+    "before": "216b5808a935050cbf00ac5df720ef789ce16cecebd2882f561b92026f232e4e",
+    "after": "b67719e6001a1d25868c6ba7d19f01e6615f7774d159c3c731f39edcd51f7d26"
+  },
+  "app/src/main/assets/cash-core.js": {
+    "before": "e1900ce1806f67ee0d68e09c7dbbb62b4cd74bedc0a7c689c17698ba99862895",
+    "after": "98cf492d6569154d68fa1c6fca2078fcd6649e8c46c591a2773ecdc84ee6be90"
+  },
+  "app/src/main/assets/cash-ui.js": {
+    "before": "9c6da36f118c3cc01de9ea24a3b74b97b0224111ca1de94fc89b9ff88c802e5c",
+    "after": "b4654cd90f2cc5db2d794e4062570081a223a52218a7e0df309d4ace82f40bbc"
+  },
+  "app/src/main/assets/core.js": {
+    "before": "5bb2ae5df2c89e94ad6845afa2359b1563cd5e43bc1c48227cf6243880c1e743",
+    "after": "3cd6e75ede421a707a4a76bf9f624fce6936bbb69e6e224628bc515e295d397d"
+  },
+  "app/src/main/assets/index.html": {
+    "before": "87ab29bfcb385cc34fef30ac941b2e2fd0b33763a05f3d88733e02518809c808",
+    "after": "71f22c179f5c19b19f3ec668505412f6fea859d3cd29624d9ccd99df55d06477"
+  },
+  "app/src/main/assets/settlement-core.js": {
+    "before": "",
+    "after": "8875f91a9bb1e95987d94768e7bf272d6664f1e9a5f6635893ba6a65af1de28f"
+  },
+  "app/src/main/assets/style.css": {
+    "before": "15fd04388d74d1ba41b24ccf168756ae69bb3c431bc4b2588a1c4a7e6c7989c6",
+    "after": "90698c1e06ddf039a576768532f30be248c0d640cba81a1d5b2a8af5edff13d4"
+  },
+  "tests/cash-v074.test.cjs": {
+    "before": "",
+    "after": "88f261982588be875c50fec8b7ff9e2380d86f0d36b44421b7b8a9c2d47741b6"
+  },
+  "__payload_sha256__": "48b5a3c9ac94fcb9f84b2a3ff6776ad02a8597aab2d6d81410c59a5fc74ea2a2"
+}
