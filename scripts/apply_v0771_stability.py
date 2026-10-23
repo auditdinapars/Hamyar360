@@ -60,6 +60,7 @@ replace(rel,"state=valid;render();notice('ورود گروهی Excel ذخیره �
 replace(rel,"replace:next=>{state=K.validate(next);selectedVersion='';render()}","replace:next=>{state=K.validate(next);selectedVersion='';clearMatrix();render()}")
 replace(rel,"root.HaselCashUI={init,render,previewExcel","root.HaselDataSync?.subscribe(change=>{if(change.scope==='legacy'&&ready)report()});\nroot.HaselCashUI={init,render,previewExcel")
 replace('app/build.gradle',"versionCode 14; versionName '0.7.7'","versionCode 15; versionName '0.7.7.1'")
+replace('app/build.gradle',"applicationIdSuffix '.beta'","applicationIdSuffix '.stability'")
 v='app/src/main/java/com/hamyar360/app/VoiceInput.java'
 replace(v,'import android.speech.SpeechRecognizer;','import android.speech.SpeechRecognizer;\nimport android.widget.EditText;')
 replace(v,'static final int MICROPHONE_PERMISSION=915;','static final int MICROPHONE_PERMISSION=915, ALTERNATIVE_RECOGNIZER_REQUEST=922;')
