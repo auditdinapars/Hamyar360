@@ -16,7 +16,9 @@ with tarfile.open(fileobj=io.BytesIO(lzma.decompress(payload)),mode='r:') as arc
   if not member.isfile() or rel.is_absolute() or '..' in rel.parts or member.issym() or member.islnk():raise SystemExit('Unsafe archive member')
   destination=root/rel
   old=hashlib.sha256(destination.read_bytes()).hexdigest() if destination.exists() else ''
-  if old!=manifest[member.name]['before']:\n   if member.name in {'BUILD-STATUS.md','README.md'}: print('Non-executable documentation baseline differs:',member.name)\n   else: raise SystemExit('Unexpected 0.7.3 base: '+member.name)
+  if old!=manifest[member.name]['before']:
+   if member.name in {'BUILD-STATUS.md','README.md'}: print('Non-executable documentation baseline differs:',member.name)
+   else: raise SystemExit('Unexpected 0.7.3 base: '+member.name)
   raw=arc.extractfile(member).read()
   if hashlib.sha256(raw).hexdigest()!=manifest[member.name]['after']:raise SystemExit('v0.7.4 file hash mismatch: '+member.name)
   pending.append((destination,raw))
