@@ -101,8 +101,8 @@
   },
   "qa/sync_ui_v0771.py": {
     "before": "190303f4ddbbf36cdf75f5149ff851e75f7efea39d23ede9eda5686b543ae417",
-    "after": "0cce71b4bf682e3bd1913c925ffa9a41efe6c5de4687e3765fa7a28a1c973244",
-    "size": 3689
+    "after": "37df3c1f7571b9f02d0c49529793997bff001b7ef62997835d6c8e457162580a",
+    "size": 3726
   },
   "qa/table_reports_v078.py": {
     "before": null,
