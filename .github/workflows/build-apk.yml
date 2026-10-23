@@ -16,8 +16,10 @@ jobs:
     timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
-      - name: Test calendar, speech parsing, reports and backup validation
-        run: node --test tests/core.test.cjs
+      - name: Restore verified Hasel 360 v0.7.0 source
+        run: python3 scripts/apply_v070_overlay.py
+      - name: Test legacy flows and cash budgeting engine
+        run: node --test tests/*.test.cjs
       - uses: actions/setup-java@v4
         with:
           distribution: temurin
@@ -53,7 +55,7 @@ jobs:
           script: gradle --no-daemon :app:connectedDebugAndroidTest
       - uses: actions/upload-artifact@v4
         with:
-          name: Hamyar360-debug-apk
+          name: Hasel360-v070-beta-debug-apk
           path: |
             app/build/outputs/apk/debug/app-debug.apk
             app/build/outputs/apk/debug/app-debug.apk.sha256
