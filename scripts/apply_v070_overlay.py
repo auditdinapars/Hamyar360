@@ -5,8 +5,8 @@ import base64, hashlib, io, lzma, tarfile
 
 root = Path(__file__).resolve().parents[1]
 parts = sorted((root / "overlays" / "v070").glob("part-*.txt"))
-if len(parts) != 4:
-    raise SystemExit(f"Expected four overlay parts, found {len(parts)}")
+if len(parts) != 5:
+    raise SystemExit(f"Expected five overlay parts, found {len(parts)}")
 packed = base64.b64decode("".join(p.read_text().strip() for p in parts), validate=True)
 actual = hashlib.sha256(packed).hexdigest()
 expected = "a6fc0f3ef5ba08e282c838a06a0c6bfd4d1d5c8e69061fcf55f27967d65eeb51"
