@@ -16,8 +16,8 @@
   },
   "app/src/main/assets/app.js": {
     "before": "a675119bf3adc1e63c1bd936bbb968644ce31f0fb25918d463ef39af6681ce83",
-    "after": "38d05f52064cf4eb0d92bb200908fac90d9c826cbd0da327eb7d67491c107981",
-    "size": 50822
+    "after": "1d6135f842337efebb5e08c5cd0696b44aed5d83d1fee9212aa59f7713e98a3e",
+    "size": 51318
   },
   "app/src/main/assets/cash-core.js": {
     "before": "98cf492d6569154d68fa1c6fca2078fcd6649e8c46c591a2773ecdc84ee6be90",
@@ -101,8 +101,8 @@
   },
   "qa/sync_ui_v0771.py": {
     "before": "190303f4ddbbf36cdf75f5149ff851e75f7efea39d23ede9eda5686b543ae417",
-    "after": "e5613b00d01a28093efc6875fd362828c8d59a5cdc4e1715c34b4f2ed4fe39be",
-    "size": 3633
+    "after": "0cce71b4bf682e3bd1913c925ffa9a41efe6c5de4687e3765fa7a28a1c973244",
+    "size": 3689
   },
   "qa/table_reports_v078.py": {
     "before": null,
