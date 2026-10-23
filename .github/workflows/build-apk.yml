@@ -2,7 +2,7 @@ name: Build Android APK
 on:
   workflow_dispatch:
   push:
-    branches: [main, feature/cash-control-v071, feature/cash-control-v072, feature/cash-control-v073, feature/cash-control-v074, feature/cash-control-v075, feature/cash-control-v076, feature/excel-center-v077, fix/stability-v0771]
+    branches: [main, feature/cash-control-v071, feature/cash-control-v072, feature/cash-control-v073, feature/cash-control-v074, feature/cash-control-v075, feature/cash-control-v076, feature/excel-center-v077, fix/stability-v0771, feature/cashflow-v078]
   pull_request:
     branches: [main]
 permissions:
@@ -38,8 +38,10 @@ jobs:
         run: python3 scripts/apply_v0771_stability.py
       - name: Extend speech fallback unit tests
         run: python3 scripts/apply_v0771_voice_tests.py
+      - name: Restore verified Hasel360 v0.7.8 changes
+        run: python3 scripts/apply_v078_overlay.py
       - name: Assert exact beta version
-        run: grep -q "versionName '0.7.7.1'" app/build.gradle
+        run: grep -q "versionName '0.7.8'" app/build.gradle
       - name: Test legacy flows, budget matrix and payment controls
         run: node --test tests/*.test.cjs
       - uses: actions/setup-python@v5
@@ -60,6 +62,10 @@ jobs:
           python qa/excel_ui_v077.py
       - name: Test shared event bus, dashboard and stale matrix UI
         run: python qa/sync_ui_v0771.py
+      - name: Test offline help, cashflow, recurring and photo UI
+        run: python qa/ui_v078_inline.py
+      - name: Verify six compact grid/report requirements
+        run: python qa/grids_v078.py
       - uses: actions/setup-java@v4
         with:
           distribution: temurin
@@ -95,7 +101,7 @@ jobs:
           script: gradle --no-daemon :app:connectedDebugAndroidTest
       - uses: actions/upload-artifact@v4
         with:
-          name: Hasel360-v0771-stability-debug-apk
+          name: Hasel360-v078-next-debug-apk
           path: |
             app/build/outputs/apk/debug/app-debug.apk
             app/build/outputs/apk/debug/app-debug.apk.sha256
