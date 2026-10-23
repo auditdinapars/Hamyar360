@@ -41,6 +41,17 @@ while True:
     target = root / rel
     old = target.read_bytes() if target.exists() else b''
     if hashlib.sha256(old).digest() != before_sha:
+        if rel.as_posix() in {'BUILD-STATUS.md', 'README.md', 'build-windows.cmd', 'build-windows.ps1'}:
+            print('Skipping non-build document/helper with different baseline:', rel)
+            for _ in range(u32()):
+                op = read_exact(1)
+                if op == b'C':
+                    u32(); u32()
+                elif op == b'L':
+                    read_exact(u32())
+                else:
+                    raise SystemExit('Invalid delta opcode')
+            continue
         raise SystemExit('Wrong 0.7.0 source for ' + str(rel))
     lines = old.splitlines(keepends=True)
     output = bytearray()
