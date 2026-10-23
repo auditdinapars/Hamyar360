@@ -1,0 +1,58 @@
+{
+  "tests/cash-v072.test.cjs": {
+    "old": "",
+    "new": "5d89147e225e566086f6a1a1f7e074f1fe1d07646809a24473ce8829c9804ed9"
+  },
+  "app/build.gradle": {
+    "old": "2b04b0350a25242f16152a02ddb31ea6985a9c3751c15b2b451465f442ca32c3",
+    "new": "16c5d17df8ad39cdd58980b9f3a771ebb15b58343360ff588eb09ce843fa282c"
+  },
+  "app/src/test/java/com/hamyar360/app/CashXlsxTest.java": {
+    "old": "",
+    "new": "5d3fe09c7dd6e34bc397bf9ae6c7b9467d947943b6cf65e9e7e3b239bff2bbe2"
+  },
+  "app/src/test/java/com/hamyar360/app/LocalAuthTest.java": {
+    "old": "",
+    "new": "c4c7b409aecbcb2e404154e91c08fcfff4a65f3287e9545b7ebfae2a26885c90"
+  },
+  "app/src/main/assets/index.html": {
+    "old": "1851eb88ff8f3e84864d069ad147525c95a0b6a15251c954a4325cdcab5a6214",
+    "new": "cba1c40ced5f89461984ff427ef0f406e32d6711d85735ec795c91aba0030f82"
+  },
+  "app/src/main/assets/app.js": {
+    "old": "eba95b47b0fe963663d4a92c9b47d8a9dbc2ed31f77fa1cd9212e90d7a8d581a",
+    "new": "8115c6163909b4fba456bf2c927a3335e3dd1a42ea37c339f10aa6c08a26bbde"
+  },
+  "app/src/main/assets/cash-core.js": {
+    "old": "96308b5ed537af35310564430d102591e84f8452e0fa18eaab19af72a2e9296c",
+    "new": "0e8bdbf329994519ef538598f27984b42707b34c900e10328ebf83d421241197"
+  },
+  "app/src/main/assets/cash-import.js": {
+    "old": "f651a97507523c8c9e9859149687e094492b03cad580b1efc9d3ce94d367efb7",
+    "new": "588b2914c3e8dc91e40bf46c826ed8099700075268fef0e93193c80fabb3aa81"
+  },
+  "app/src/main/assets/style.css": {
+    "old": "1731191b14495bf7f2942c32a5c6633acf650b5a1bca83d18ec2bb9777a88146",
+    "new": "e9cb3a67d196457f2eec2888162ecab2048bfdb9cd2b9d567cf6e1708035d0e4"
+  },
+  "app/src/main/assets/security.js": {
+    "old": "",
+    "new": "c630d2742373d8ce0ca941e711b17e15a664ea8dd8ac436670ce1c6867fa7088"
+  },
+  "app/src/main/assets/cash-ui.js": {
+    "old": "c39ee9b61565069669fa1ca1143df2c477da708765307bcb4cc165b0214d8bb1",
+    "new": "ef8f96b80fab218d4ebe3c6b7977598adbd8525ca677014d5e901cb3de284045"
+  },
+  "app/src/main/java/com/hamyar360/app/MainActivity.java": {
+    "old": "9410f51f5b512dfd856834d9155800ce5f5756de991993aa82321f0b97ef2114",
+    "new": "c2192f05f19b5c24370c2441987f87f44cc3241ea3e1a9bbb8266f80e2982e66"
+  },
+  "app/src/main/java/com/hamyar360/app/LocalAuth.java": {
+    "old": "",
+    "new": "48d4caa076372cf595db28b01143f631c9b5b2e9d2b9323f143ffaf4499fbdc3"
+  },
+  "app/src/main/java/com/hamyar360/app/SpreadsheetIO.java": {
+    "old": "",
+    "new": "707c579c28d4812be92c4fb2668619fe1e320437b3aa735c950343640aa55eef"
+  }
+}
