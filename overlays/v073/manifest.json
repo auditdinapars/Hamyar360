@@ -1,0 +1,71 @@
+{
+  "BUILD-STATUS.md": {
+    "before": "dd1012e6f11e2609dd811bbe549ddbca91782f02b30709f6d694c98cab4d3402",
+    "after": "15e9c1925fb99991d8db6f53a613416bf6e3ebe6dcf9ae296a57ddd71adfaf8d"
+  },
+  "README.md": {
+    "before": "42ea198ff2dc3103ba6b19c4f4e44a74da3e0729873fca1f030c3f50e723ffaa",
+    "after": "d88f79daab4687e14444236ea7c1cb96352314daa68423f172f9e5e8cb76bf71"
+  },
+  "app/build.gradle": {
+    "before": "16c5d17df8ad39cdd58980b9f3a771ebb15b58343360ff588eb09ce843fa282c",
+    "after": "bd67578c39145fc7c21a8a402f3f528ee09beb94e24bbbf4e0976934ec5a91ac"
+  },
+  "app/src/main/assets/app.js": {
+    "before": "8115c6163909b4fba456bf2c927a3335e3dd1a42ea37c339f10aa6c08a26bbde",
+    "after": "216b5808a935050cbf00ac5df720ef789ce16cecebd2882f561b92026f232e4e"
+  },
+  "app/src/main/assets/cash-core.js": {
+    "before": "0e8bdbf329994519ef538598f27984b42707b34c900e10328ebf83d421241197",
+    "after": "e1900ce1806f67ee0d68e09c7dbbb62b4cd74bedc0a7c689c17698ba99862895"
+  },
+  "app/src/main/assets/cash-ui.js": {
+    "before": "ef8f96b80fab218d4ebe3c6b7977598adbd8525ca677014d5e901cb3de284045",
+    "after": "9c6da36f118c3cc01de9ea24a3b74b97b0224111ca1de94fc89b9ff88c802e5c"
+  },
+  "app/src/main/assets/index.html": {
+    "before": "cba1c40ced5f89461984ff427ef0f406e32d6711d85735ec795c91aba0030f82",
+    "after": "87ab29bfcb385cc34fef30ac941b2e2fd0b33763a05f3d88733e02518809c808"
+  },
+  "app/src/main/assets/security.js": {
+    "before": "c630d2742373d8ce0ca941e711b17e15a664ea8dd8ac436670ce1c6867fa7088",
+    "after": "9730282239c5c9a913c6e2067184153d17fcd0350c269a44f23f1088400b5a57"
+  },
+  "app/src/main/assets/style.css": {
+    "before": "e9cb3a67d196457f2eec2888162ecab2048bfdb9cd2b9d567cf6e1708035d0e4",
+    "after": "15fd04388d74d1ba41b24ccf168756ae69bb3c431bc4b2588a1c4a7e6c7989c6"
+  },
+  "app/src/main/java/com/hamyar360/app/LocalAuth.java": {
+    "before": "2c1cb7ba72b9c2c276fbc629ab1a973a8db2b3a4155f6e786781a4d8e4471983",
+    "after": "904ecb884be007ce627e869981e8ca96ded5338b1e4ba793897a58194e5d8ea0"
+  },
+  "app/src/main/java/com/hamyar360/app/MainActivity.java": {
+    "before": "c2192f05f19b5c24370c2441987f87f44cc3241ea3e1a9bbb8266f80e2982e66",
+    "after": "aa1ef3677e80d2e8320a3728f55768d877a41dfd4571a15a6338fecb42519218"
+  },
+  "app/src/test/java/com/hamyar360/app/LocalAuthTest.java": {
+    "before": "c4c7b409aecbcb2e404154e91c08fcfff4a65f3287e9545b7ebfae2a26885c90",
+    "after": "f385233d7fff85ce1772c07bf167ab23efaaba42d85a9ff68193c99cbc58bbae"
+  },
+  "docs/CASH-BUDGET-V073.md": {
+    "before": "",
+    "after": "d3db4a25c145b994d92ff1ed907dc6d071e6575b65091b4ab2a2a523fa71ce0f"
+  },
+  "tests/cash-v071.test.cjs": {
+    "before": "d038a3a7c92b0af5d78bd26c466f41d60c9f05555aa314e7f330107d07aad020",
+    "after": "5a07beb34dc765fb638f1084b83e6f35c2d232144fc3b61beb1d6a0891489930"
+  },
+  "tests/cash-v072.test.cjs": {
+    "before": "5d89147e225e566086f6a1a1f7e074f1fe1d07646809a24473ce8829c9804ed9",
+    "after": "a038767463ffdc498b4c760226d5c9bb6a03c1408922dbc64c70bbd8655dc251"
+  },
+  "tests/cash-v073.test.cjs": {
+    "before": "",
+    "after": "f9433efa30bd65c18f3a2f5e41528643bfc804fa7d292187ea467e271db388c7"
+  },
+  "tests/cash.test.cjs": {
+    "before": "87d6c390dc89689ba96788d03a2d409b4f446d4de88deb62c86d19e74e6d12ce",
+    "after": "1e241ef23798e8bfd5960c9422041094d17798736171c86d8d961c4dbb5bd33e"
+  },
+  "__payload_sha256__": "ee0c9fe4846f81641d21a82e657f13f7fbc24200a5ed88c4af8a57996b36662c"
+}
