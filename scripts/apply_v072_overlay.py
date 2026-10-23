@@ -23,3 +23,9 @@ with tarfile.open(fileobj=io.BytesIO(lzma.decompress(blob)),mode='r:') as z:
     dest.parent.mkdir(parents=True,exist_ok=True);dest.write_bytes(raw)
     print('Restored verified',member.name)
 print('v0.7.2 verified source restored')
+# Android API 24 compatibility: use supported XML property URIs and PBKDF2-HMAC-SHA1.
+x=root/'app/src/main/java/com/hamyar360/app/SpreadsheetIO.java'
+t=x.read_text().replace('XMLConstants.ACCESS_EXTERNAL_DTD','"http://javax.xml.XMLConstants/property/accessExternalDTD"').replace('XMLConstants.ACCESS_EXTERNAL_SCHEMA','"http://javax.xml.XMLConstants/property/accessExternalSchema"')
+x.write_text(t)
+x=root/'app/src/main/java/com/hamyar360/app/LocalAuth.java'
+x.write_text(x.read_text().replace('PBKDF2WithHmacSHA256','PBKDF2WithHmacSHA1'))
