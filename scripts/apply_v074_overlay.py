@@ -18,7 +18,8 @@ with tarfile.open(fileobj=io.BytesIO(lzma.decompress(payload)),mode='r:') as arc
   old=hashlib.sha256(destination.read_bytes()).hexdigest() if destination.exists() else ''
   if old!=manifest[member.name]['before']:
    if member.name in {'BUILD-STATUS.md','README.md'}: print('Non-executable documentation baseline differs:',member.name)
-   else: raise SystemExit('Unexpected 0.7.3 base: '+member.name)
+   elif member.name=='app/src/main/assets/core.js' and old=='37d825a1018677adca79b9ba112821dfdf03d6fed7268eed25ab68eb59709e11': print('Verified LF-normalized v0.7.3 core.js baseline')
+   else: raise SystemExit('Unexpected 0.7.3 base: '+member.name+' actual='+old+' expected='+manifest[member.name]['before'])
   raw=arc.extractfile(member).read()
   if hashlib.sha256(raw).hexdigest()!=manifest[member.name]['after']:raise SystemExit('v0.7.4 file hash mismatch: '+member.name)
   pending.append((destination,raw))
