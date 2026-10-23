@@ -1,0 +1,127 @@
+{
+  "BUILD-STATUS.md": {
+    "before": "c932cabdc3d4c830f8a64d3a53541712901460ba07e23656ce564615dcf0937a",
+    "after": "ce1d5bb1816adedeb0323047f4530ea81510955fec848ae6fc80a7902549dee9",
+    "size": 726
+  },
+  "README.md": {
+    "before": "65754fc1a2245a30878dde6b4819b8ef7de1769fa418fc07019ffb8bbc6a1774",
+    "after": "1206a1d8c2597d994560bb4e52961fed8d31d61942bee271e87347cb70f6d6ba",
+    "size": 7549
+  },
+  "app/build.gradle": {
+    "before": "b60eace9784cb3d57c98911eeaa63d265e4aa52adbe7e43e137bce8dcb0f0f24",
+    "after": "939ddf029b6b5f872e83d47fe20b3ff0b59f80aea20c1a4f9c38a12fb700bd64",
+    "size": 2011
+  },
+  "app/src/main/assets/app.js": {
+    "before": "a675119bf3adc1e63c1bd936bbb968644ce31f0fb25918d463ef39af6681ce83",
+    "after": "38d05f52064cf4eb0d92bb200908fac90d9c826cbd0da327eb7d67491c107981",
+    "size": 50822
+  },
+  "app/src/main/assets/cash-core.js": {
+    "before": "98cf492d6569154d68fa1c6fca2078fcd6649e8c46c591a2773ecdc84ee6be90",
+    "after": "fcdb8381e1c0c2c5a609470c8e9d2eefef70641dbe93aceb3aa9852fa06450ec",
+    "size": 48868
+  },
+  "app/src/main/assets/cash-ui.js": {
+    "before": "b88ed6e8c1f63505bf144e5fbb90a1f6a60a8adaeba8aa0d72e44756f2d23076",
+    "after": "d288cf87ca0b04899bd2c4cc3f657fa0c3f90812d9b7cdfdfdd55976504f88f9",
+    "size": 33114
+  },
+  "app/src/main/assets/cashflow-v078.js": {
+    "before": null,
+    "after": "7fb097944a4089dee08b310b53bbb40520653d2123f2f420c03cc167574e0598",
+    "size": 6551
+  },
+  "app/src/main/assets/core.js": {
+    "before": "be07cfd7b72e87ffbdc195dc13ff06b1d07e27a9b5bfc886d54f0e93c7882cbd",
+    "after": "55c2d443be31d7e3a5fedb837c2f692ffcda2c64951390de258984dda3519856",
+    "size": 14519
+  },
+  "app/src/main/assets/help-v078.js": {
+    "before": null,
+    "after": "9f24c77ea14aaa16a4e8104cc6ce0f63e0efd9ecce0cdc1969938da9bb57a50e",
+    "size": 9831
+  },
+  "app/src/main/assets/index.html": {
+    "before": "d173b845046f139a982eff73a2d9e47a6592355d2d51b1f3cacbe0bba599369c",
+    "after": "5403f5094db73fd8bd3d636c3695d76c3259e546c0cfbba6e11f92e61aebc153",
+    "size": 40241
+  },
+  "app/src/main/assets/photo-editor-v078.js": {
+    "before": null,
+    "after": "a8087f06f4a69727e14bae4a05403f6b575a0af7efb46ada29fbf6f191590f0e",
+    "size": 4559
+  },
+  "app/src/main/assets/recurring-ui-v078.js": {
+    "before": null,
+    "after": "1d575bb7051bdd7a8ed141c25b1cf7d6f37300ac9597890393725221679f4a17",
+    "size": 3195
+  },
+  "app/src/main/assets/recurring-v078.js": {
+    "before": null,
+    "after": "419b9ac9126fba5dc1e89b84521919348eb2d2d4fa1b252edb37296d45923358",
+    "size": 3710
+  },
+  "app/src/main/assets/smart-grid-v078.js": {
+    "before": null,
+    "after": "bf580c6ac293290faea608aea3681fd78eba23c217180c642975ad0c517ef202",
+    "size": 8632
+  },
+  "app/src/main/assets/style.css": {
+    "before": "96be9e049edfd45f0919e7169c81bb08961f958f383b03775645c18d5553b674",
+    "after": "20ffb9615ea57558b91f5745423c33326b0e1ee8a227d1d8f3312590a63d65e0",
+    "size": 28945
+  },
+  "docs/HASEL-V078-FA.md": {
+    "before": null,
+    "after": "f61f239178ef5abdcf0b30af486dc953fb6518cacc47e2e29257f3668c4db737",
+    "size": 8047
+  },
+  "docs/UX-SIX-V078-FA.md": {
+    "before": null,
+    "after": "60fdd8e4ae0f43e99a197150fc95b429b60b1ed4fe2ad6d64b53bd14b81fd620",
+    "size": 4269
+  },
+  "docs/V078-UNIFIED-GRID-REPORTS-FA.md": {
+    "before": null,
+    "after": "1da946eaa3b8aa4c7573529a3401f4341110dd481ca78f54953f3823e5ad1bdb",
+    "size": 6224
+  },
+  "qa/excel_ui_v077.py": {
+    "before": "1cfd9ddcac7cb42c2cc5867fb263bd526760fc5780938afaa2ebe8ed445963dc",
+    "after": "343ccf1fc8b993d784788db95815d1ab10163daf4c3b8eb782f73c5fa3f36151",
+    "size": 4628
+  },
+  "qa/grids_v078.py": {
+    "before": null,
+    "after": "efd348903c47f7f3c9fe762b7ca5523331b08bec2a2ed1d90ee25bfe8af7c2bf",
+    "size": 7521
+  },
+  "qa/sync_ui_v0771.py": {
+    "before": "190303f4ddbbf36cdf75f5149ff851e75f7efea39d23ede9eda5686b543ae417",
+    "after": "a8e86c792ad8ce5435f30232d338cba94c631db35505283f5c864002ce234e05",
+    "size": 3625
+  },
+  "qa/table_reports_v078.py": {
+    "before": null,
+    "after": "f3b7fd5acda80f8e2d9f5978b10795cd9d2f1754632aeb782eb0d9ce5605be0f",
+    "size": 7676
+  },
+  "qa/ui_v078_inline.py": {
+    "before": null,
+    "after": "2b4fae5bfc470ba459905a746b5dbc59965f39d1a0cfbff5c8f388b27d07fa87",
+    "size": 7734
+  },
+  "tests/next-v078.test.cjs": {
+    "before": null,
+    "after": "af4e17d9d7c5ecdffcd480023bd90d3ea4a4d83baf32ff3229994b6eab19d84a",
+    "size": 7913
+  },
+  "tests/smart-grid-v078.test.cjs": {
+    "before": null,
+    "after": "3c340f515baa656a0005521e2887e6cfeeed0e578c6df5543fbd97bd6b772447",
+    "size": 2352
+  }
+}
