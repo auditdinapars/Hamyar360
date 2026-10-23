@@ -37,6 +37,7 @@ try:
   page.wait_for_function("document.querySelector('#recordList').textContent.includes('فعالیت آزمایشی همگام‌سازی')")
   print('PASS: activity list auto-refreshes after save')
   page.locator('[data-tab="cash"]').click()
+  page.evaluate("document.querySelector('#cashDrawMatrix').closest('details').open=true")
   page.locator('#cashDrawMatrix').click()
   assert page.locator('#cashMatrixBody input.cash-matrix-cell').count()>0
   assert not page.locator('#cashSaveMatrix').is_disabled()
