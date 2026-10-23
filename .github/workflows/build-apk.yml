@@ -2,7 +2,7 @@ name: Build Android APK
 on:
   workflow_dispatch:
   push:
-    branches: [main, feature/cash-control-v071, feature/cash-control-v072, feature/cash-control-v073, feature/cash-control-v074, feature/cash-control-v075, feature/cash-control-v076]
+    branches: [main, feature/cash-control-v071, feature/cash-control-v072, feature/cash-control-v073, feature/cash-control-v074, feature/cash-control-v075, feature/cash-control-v076, feature/excel-center-v077]
   pull_request:
     branches: [main]
 permissions:
@@ -30,10 +30,28 @@ jobs:
         run: python3 scripts/apply_v075_overlay.py
       - name: Restore Hasel 360 version 0.7.6 source
         run: python3 scripts/apply_v076_overlay.py
+      - name: Restore checksum-verified Excel center 0.7.7
+        run: python3 scripts/apply_v077_overlay.py
       - name: Assert exact beta version
-        run: grep -q "versionName '0.7.6'" app/build.gradle
+        run: grep -q "versionName '0.7.7'" app/build.gradle
       - name: Test legacy flows, budget matrix and payment controls
         run: node --test tests/*.test.cjs
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - name: Test XLSX UI and mobile widths
+        run: |
+          python -m pip install --disable-pip-version-check playwright==1.56.0
+          python -m playwright install --with-deps chromium
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('qa/excel_ui_v077.py')
+          s=p.read_text()
+          s=s.replace("root=Path('/mnt/data/hasel-v077-work/source/app/src/main/assets')", "root=Path(__file__).resolve().parents[1]/'app/src/main/assets'")
+          s=s.replace("headless=True,executable_path='/usr/bin/chromium',args=['--no-sandbox']", "headless=True,args=['--no-sandbox']")
+          p.write_text(s)
+          PY
+          python qa/excel_ui_v077.py
       - uses: actions/setup-java@v4
         with:
           distribution: temurin
@@ -69,7 +87,7 @@ jobs:
           script: gradle --no-daemon :app:connectedDebugAndroidTest
       - uses: actions/upload-artifact@v4
         with:
-          name: Hasel360-v076-beta-debug-apk
+          name: Hasel360-v077-beta-debug-apk
           path: |
             app/build/outputs/apk/debug/app-debug.apk
             app/build/outputs/apk/debug/app-debug.apk.sha256
