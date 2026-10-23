@@ -1,0 +1,31 @@
+{
+  "app/src/main/assets/index.html": {
+    "before": "214c2cffdbd91afa1f584b7dc33f1fab40d15c89e50e9564eb10dd02b636ad4b",
+    "after": "a029e46d3f6038ee084ec70eb5086a0367f2b54c2068b206d1412d39f805fef0"
+  },
+  "app/src/main/assets/style.css": {
+    "before": "caee3ddf88f74a7ce79be4640a071cf69d1322a068b33c3b54737ba5e1a0560d",
+    "after": "a1c9b0342e1e581a270b1d33b259cbb47cded215a8717a2fe3a6b926150d3c9a"
+  },
+  "app/src/main/assets/app.js": {
+    "before": "abcf6519d5fff299ca535c110ad121ba8ca0763140e370534c896f0e68809a6b",
+    "after": "5cec6bf03e7ee224d61b51bf8ec4bbd64e096cbdf77a3738f3959e5ab806ba2a"
+  },
+  "app/src/main/assets/period-analytics.js": {
+    "before": "219f1cb7c40b454fde2c0524626b83b8e690062478d5ee71284b16713722c0fb",
+    "after": "0774a57ddb9f2edeffec543063a4502bb92a90abb407e94abcff449ccb0c52f2"
+  },
+  "app/build.gradle": {
+    "before": "4c9aba295696cb5768f03b544c8e9656e5c21f92dc836dc8e080b2d262860d6c",
+    "after": "4e72337347189f98171dec5aa53df5072c26736a962c00082912a6c1209649cf"
+  },
+  "tests/period-v076.test.cjs": {
+    "before": "",
+    "after": "6b544ef8f45eb3efc3a6dce03c7520ae1a8abfebfcfcb34ad1bb3b3e7fa1852e"
+  },
+  "docs/HASEL-V076.md": {
+    "before": "",
+    "after": "04c5a230257a614850a914834b5a348ae7e1ab5926179af808085d8c9c6e1616"
+  },
+  "__payload_sha256__": "f30977f0a39485cb585da28acfd5d4889d4daa01b6c809a4482a0dca56560ea0"
+}
