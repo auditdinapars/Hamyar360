@@ -1,0 +1,93 @@
+name: Hasel360 v0.8.0 validated candidate
+on:
+  workflow_dispatch:
+  push:
+    branches: [feature/dashboard-recurring-v080]
+permissions:
+  contents: read
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install HTML parsing library
+        run: python3 -m pip install beautifulsoup4==4.14.2
+      - name: Restore version 0.7.0 source
+        run: python3 scripts/apply_v070_overlay.py
+      - name: Restore version 0.7.1 changes
+        run: python3 scripts/apply_v071_delta.py
+      - name: Restore version 0.7.2 source
+        run: python3 scripts/apply_v072_overlay.py
+      - name: Restore version 0.7.3 source
+        run: python3 scripts/apply_v073_overlay.py
+      - name: Restore version 0.7.4 source
+        run: python3 scripts/apply_v074_overlay.py
+      - name: Restore version 0.7.5 source
+        run: python3 scripts/apply_v075_overlay.py
+      - name: Restore version 0.7.6 source
+        run: python3 scripts/apply_v076_overlay.py
+      - name: Restore version 0.7.7 source
+        run: python3 scripts/apply_v077_overlay.py
+      - name: Apply Excel audit persistence
+        run: python3 scripts/apply_v077_core_patch.py
+      - name: Apply version 0.7.7.1 stability
+        run: python3 scripts/apply_v0771_stability.py
+      - name: Extend speech fallback tests
+        run: python3 scripts/apply_v0771_voice_tests.py
+      - name: Restore verified version 0.7.8 source
+        run: python3 scripts/apply_v078_overlay.py
+      - name: Restore isolated version 0.8.0 changes
+        run: python3 scripts/apply_v080_overlay.py
+      - name: JavaScript tests
+        run: node --test tests/*.test.cjs
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - name: Browser prerequisites
+        run: |
+          python -m pip install --disable-pip-version-check playwright==1.56.0
+          python -m playwright install --with-deps chromium
+      - name: Browser UI regression
+        run: python qa/ui_v080.py
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: android-actions/setup-android@v3
+        with:
+          packages: 'platform-tools'
+          log-accepted-android-sdk-licenses: false
+      - name: Install Android SDK
+        run: sdkmanager "platforms;android-35" "build-tools;34.0.0"
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.9'
+      - name: Build, lint, and unit tests
+        run: gradle --no-daemon --stacktrace :app:assembleDebug :app:lintDebug :app:testDebugUnitTest
+      - name: APK checksum
+        working-directory: app/build/outputs/apk/debug
+        run: sha256sum app-debug.apk > app-debug.apk.sha256
+      - name: Emulator acceleration
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+      - name: Android 16 instrumented tests
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 36
+          target: google_apis
+          arch: x86_64
+          profile: pixel_6
+          disable-animations: true
+          script: gradle --no-daemon :app:connectedDebugAndroidTest
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Hasel360-v080-dev-debug-apk
+          path: |
+            app/build/outputs/apk/debug/app-debug.apk
+            app/build/outputs/apk/debug/app-debug.apk.sha256
+          retention-days: 14
+          if-no-files-found: error
