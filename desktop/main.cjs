@@ -33,7 +33,7 @@ function tick(){
 }
 function startWindow(){
  win=new BrowserWindow({title:'حاصل ۳۶۰ — نسخه دسکتاپ آزمایشی',width:1440,height:900,minWidth:860,minHeight:610,show:false,backgroundColor:'#fff8f1',autoHideMenuBar:false,
-  webPreferences:{preload:path.join(__dirname,'preload.cjs'),nodeIntegration:false,contextIsolation:true,sandbox:true,webSecurity:true,allowRunningInsecureContent:false,webviewTag:false,partition:'persist:hasel-desktop-090'}});
+  webPreferences:{preload:path.join(__dirname,'preload.cjs'),nodeIntegration:false,contextIsolation:true,sandbox:true,webSecurity:true,allowRunningInsecureContent:false,webviewTag:false}});
  win.once('ready-to-show',()=>win.show());
  win.webContents.setWindowOpenHandler(()=>({action:'deny'}));
  win.webContents.on('will-navigate',(event,url)=>{if(!url.startsWith('hasel://app/'))event.preventDefault()});
