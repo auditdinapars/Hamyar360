@@ -1,0 +1,18 @@
+
+/* Desktop responsive shell. Core layouts remain shared with Android source. */
+body.hasel-desktop{--desktop-content:1580px;font-size:14px}
+body.hasel-desktop main{max-width:var(--desktop-content);margin:auto;padding:22px 28px 56px}
+body.hasel-desktop header{padding:16px 32px}
+body.hasel-desktop nav{position:sticky;top:0;z-index:90;display:flex;justify-content:center;gap:4px;flex-wrap:wrap;padding:8px 20px;background:#fffdf9;border-bottom:1px solid #ebddcd;box-shadow:0 2px 12px #24150009}
+body.hasel-desktop nav button{min-width:90px;font-size:13px;padding:8px 12px}
+body.hasel-desktop .panel{padding:19px}
+body.hasel-desktop .cash-table{font-size:13px}
+body.hasel-desktop .cash-scroll{max-width:100%;overflow:auto}
+body.hasel-desktop .fields{grid-template-columns:repeat(auto-fit,minmax(250px,1fr))}
+body.hasel-desktop .home-grid{grid-template-columns:repeat(auto-fit,minmax(380px,1fr))}
+body.hasel-desktop dialog:not(.compact-date-dialog){width:min(900px,calc(100vw - 50px));max-height:90vh;overflow-y:auto}
+body.hasel-desktop .capture .actions{display:flex;flex-wrap:wrap}
+body.hasel-desktop button,body.hasel-desktop input,body.hasel-desktop select{min-height:34px}
+body.hasel-desktop button:focus-visible,body.hasel-desktop input:focus-visible{outline:3px solid #a06126;outline-offset:2px}
+body.hasel-desktop .desktop-only-note{border-inline-start:3px solid #d47a21;padding:10px 14px;background:#fff7ed;margin:12px 0;font-size:12px}
+@media(max-width:900px){body.hasel-desktop main{padding:16px}body.hasel-desktop nav{justify-content:flex-start}body.hasel-desktop nav button{min-width:auto}body.hasel-desktop .home-grid{grid-template-columns:1fr}}
