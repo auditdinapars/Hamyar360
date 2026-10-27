@@ -16,11 +16,11 @@ const bridge=Object.freeze({
  requestCalendarSync:()=>ipcRenderer.send('hasel:unsupported','اتصال خودکار تقویم گوشی در دسکتاپ فعال نیست؛ از خروجی ICS استفاده کنید.'),
  selectCalendarSync:()=>ipcRenderer.send('hasel:unsupported','همگام‌سازی تقویم با حساب کاربری هنوز پشتیبانی نمی‌شود.'),
  exportCalendarIcs:()=>ipcRenderer.invoke('hasel:calendar-ics'),
- authStatus:()=>ipcRenderer.sendSync('hasel:auth','status'),
- authSetup:(password,confirmation)=>ipcRenderer.sendSync('hasel:auth','setup',password,confirmation),
- authChange:(oldPassword,password,confirmation)=>ipcRenderer.sendSync('hasel:auth','change',oldPassword,password,confirmation),
- authUnlock:password=>ipcRenderer.sendSync('hasel:auth','unlock',password),
- authRecover:(recovery,password)=>ipcRenderer.sendSync('hasel:auth','recover',recovery,password),
+ authStatus:()=>JSON.stringify(ipcRenderer.sendSync('hasel:auth','status')),
+ authSetup:(password,confirmation)=>JSON.stringify(ipcRenderer.sendSync('hasel:auth','setup',password,confirmation)),
+ authChange:(oldPassword,password,confirmation)=>JSON.stringify(ipcRenderer.sendSync('hasel:auth','change',oldPassword,password,confirmation)),
+ authUnlock:password=>JSON.stringify(ipcRenderer.sendSync('hasel:auth','unlock',password)),
+ authRecover:(recovery,password)=>JSON.stringify(ipcRenderer.sendSync('hasel:auth','recover',recovery,password)),
  ackInbox:()=>{}
 });
 contextBridge.exposeInMainWorld('HamyarAndroid',bridge);
