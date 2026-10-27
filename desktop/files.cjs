@@ -48,13 +48,12 @@ async function writeXlsx(win,rows,title,filename){
  await workbook.xlsx.writeFile(dest.filePath);
  return true;
 }
-async function pdfText(file){
+async function pdfText(file,onProgress=()=>{}){
  const data=await guardFile(file,MAX_PDF,['.pdf']);
- const pdfParse=require('pdf-parse');
- const pdf=await pdfParse(data,{max:200});
- if(pdf.numpages>200||String(pdf.text||'').length>6000000)throw Error('PDF بزرگ‌تر از ظرفیت ایمن است');
- if(!String(pdf.text||'').trim())throw Error('این PDF اسکن تصویری است؛ استخراج متنی مطمئن ممکن نیست');
- return String(pdf.text);
+ const {extractPdfWithOcr}=require('./ocr-pdf.cjs');
+ const result=await extractPdfWithOcr(data,{onProgress});
+ if(result.text.length>6000000)throw Error('متن PDF خارج از ظرفیت ایمن است');
+ return result;
 }
 function setupFiles(win,send){
  async function action(method,...args){
@@ -74,7 +73,12 @@ function setupFiles(win,send){
   }
   else if(method==='open-bank'){
    const format=args[0];if(format!=='pdf'&&format!=='xlsx')throw Error('فرمت صورت‌حساب نامعتبر است');
-   const file=await choose(win,[{name:format.toUpperCase(),extensions:[format]}]);if(file)send(format==='pdf'?{type:'bankStatement',format,text:await pdfText(file),name:path.basename(file)}:{type:'bankStatement',format,rows:await loadXlsx(file,{bank:true}),name:path.basename(file)});
+   const file=await choose(win,[{name:format.toUpperCase(),extensions:[format]}]);if(file){
+    if(format==='pdf'){
+     const output=await pdfText(file,progress=>send({type:'ocrProgress',...progress}));
+     send({type:'bankStatement',format,text:output.text,ocr:output.ocr,name:path.basename(file)});
+    }else send({type:'bankStatement',format,rows:await loadXlsx(file,{bank:true}),name:path.basename(file)});
+   }
   }
   else if(method==='save-entity'){
    const [kind,json,mode]=args;if(!ALLOWED_KINDS.has(kind)||typeof json!=='string'||json.length>15000000)throw Error('اطلاعات خروجی نامعتبر است');
