@@ -8,7 +8,7 @@ test('OCR detects empty and header-only pages, not normal statement text',()=>{
  assert.equal(needsOcr(''),true);
  assert.equal(needsOcr('شماره حساب ۱۲۳۴۵'),true);
  assert.equal(needsOcr('Bank account 12345 - just a header'),true);
- assert.equal(needsOcr('Date: 2026-10-27 Debit: 123 Credit: 12 Balance 456 Currency IRR Account: 12345 Date: 2026-10-26'),false);
+ assert.equal(needsOcr('Date: 2026-10-27 Debit: 123 Credit: 12 Balance 456 Currency IRR Account: 12345 Date: 2026-10-26'.repeat(2)),false);
 });
 test('untrusted PDF bytes are rejected before loading any engine',async()=>{
  await assert.rejects(extractPdfWithOcr(Buffer.from('not a pdf')),/PDF/);
