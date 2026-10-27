@@ -16,7 +16,8 @@
     "pdf-parse": "1.1.1",
     "pdfjs-dist": "3.11.174",
     "@napi-rs/canvas": "0.1.81",
-    "tesseract.js": "7.0.0"
+    "tesseract.js": "7.0.0",
+    "canvas": "npm:@napi-rs/canvas@0.1.81"
   },
   "devDependencies": {
     "electron": "38.2.2",
@@ -60,7 +61,8 @@
     "asarUnpack": [
       "node_modules/tesseract.js/**/*",
       "node_modules/tesseract.js-core/**/*",
-      "node_modules/@napi-rs/canvas/**/*"
+      "node_modules/@napi-rs/canvas/**/*",
+      "node_modules/canvas/**/*"
     ]
   }
 }
