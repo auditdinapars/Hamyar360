@@ -1,0 +1,17 @@
+'use strict';
+const fs=require('node:fs'),path=require('node:path');
+const source=path.resolve(__dirname,'../app/src/main/assets'),dest=path.join(__dirname,'web');
+if(!fs.existsSync(path.join(source,'index.html')))throw Error('ابتدا سورس نسخه ۰.۸.۲ باید بازسازی شود');
+fs.rmSync(dest,{recursive:true,force:true});
+fs.cpSync(source,dest,{recursive:true,filter:p=>!p.split(path.sep).includes('tessdata')});
+fs.copyFileSync(path.join(__dirname,'desktop.css'),path.join(dest,'desktop.css'));
+fs.copyFileSync(path.join(__dirname,'desktop-ui.cjs'),path.join(dest,'desktop-ui.js'));
+const htmlFile=path.join(dest,'index.html');let html=fs.readFileSync(htmlFile,'utf8');
+if(!html.includes('</head>')||!html.includes('</body>'))throw Error('قالب HTML اصلی تغییر کرده است');
+const csp="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'none'; form-action 'self'";
+html=html.replace('</head>','<meta http-equiv="Content-Security-Policy" content="'+csp+'"><link href="desktop.css" rel="stylesheet"></head>');
+html=html.replace('</body>','<script src="desktop-ui.js"></script></body>');
+fs.writeFileSync(htmlFile,html);
+const required=['app.js','cash-core.js','cash-ui.js','excel-center.js','bank-reconcile.js','index.html','style.css','desktop-ui.js'];
+for(const f of required)if(!fs.existsSync(path.join(dest,f)))throw Error('ماژول ضروری یافت نشد: '+f);
+console.log('Desktop web shell prepared using verified Hasel360 v0.8.2 source');
