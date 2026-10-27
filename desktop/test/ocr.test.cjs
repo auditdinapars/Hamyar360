@@ -36,6 +36,8 @@ test('real offline Persian-English OCR reads raster PDF and normalizes numerals'
  assert.equal(received.ocr.used,true);
  assert.equal(received.ocr.pages,1);
  assert.equal(received.ocr.reviewRequired,true);
- assert.match(received.text,/123456789|12345678/);
+ assert.match(received.text,/ACCOUNT/i);
+ assert.match(received.text,/تاریخ/);
+ assert.match(received.text,/1405\/08\/05/);
  assert.match(received.text,/120000|1200[0-9]0/);
  });
