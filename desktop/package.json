@@ -1,7 +1,7 @@
 {
   "name": "hasel360-desktop",
   "productName": "Hasel 360 Desktop",
-  "version": "0.9.0",
+  "version": "0.9.1",
   "private": true,
   "description": "Offline desktop edition of Hasel 360 cashflow management",
   "main": "main.cjs",
@@ -13,11 +13,15 @@
   },
   "dependencies": {
     "exceljs": "4.4.0",
-    "pdf-parse": "1.1.1"
+    "pdf-parse": "1.1.1",
+    "pdfjs-dist": "3.11.174",
+    "@napi-rs/canvas": "0.1.81",
+    "tesseract.js": "7.0.0"
   },
   "devDependencies": {
     "electron": "38.2.2",
-    "electron-builder": "26.0.12"
+    "electron-builder": "26.0.12",
+    "pdf-lib": "1.17.1"
   },
   "build": {
     "appId": "com.haselnovin.hasel360.desktop.beta",
@@ -28,7 +32,8 @@
       "desktop.css",
       "web/**/*",
       "package.json",
-      "!test/**/*"
+      "!test/**/*",
+      "ocr-langs/**/*"
     ],
     "directories": {
       "output": "dist"
@@ -51,6 +56,11 @@
       "createDesktopShortcut": true,
       "createStartMenuShortcut": true,
       "deleteAppDataOnUninstall": false
-    }
+    },
+    "asarUnpack": [
+      "node_modules/tesseract.js/**/*",
+      "node_modules/tesseract.js-core/**/*",
+      "node_modules/@napi-rs/canvas/**/*"
+    ]
   }
 }
