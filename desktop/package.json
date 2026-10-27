@@ -1,0 +1,56 @@
+{
+  "name": "hasel360-desktop",
+  "productName": "Hasel 360 Desktop",
+  "version": "0.9.0",
+  "private": true,
+  "description": "Offline desktop edition of Hasel 360 cashflow management",
+  "main": "main.cjs",
+  "scripts": {
+    "start": "electron .",
+    "test": "node --test test/*.test.cjs",
+    "build:win": "electron-builder --win nsis --x64",
+    "build:portable": "electron-builder --win portable --x64"
+  },
+  "dependencies": {
+    "exceljs": "4.4.0",
+    "pdf-parse": "1.1.1"
+  },
+  "devDependencies": {
+    "electron": "38.2.2",
+    "electron-builder": "26.0.12"
+  },
+  "build": {
+    "appId": "com.haselnovin.hasel360.desktop.beta",
+    "productName": "Hasel 360 Desktop",
+    "asar": true,
+    "files": [
+      "*.cjs",
+      "desktop.css",
+      "web/**/*",
+      "package.json",
+      "!test/**/*"
+    ],
+    "directories": {
+      "output": "dist"
+    },
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "artifactName": "Hasel360-Desktop-${version}-Setup.${ext}"
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "deleteAppDataOnUninstall": false
+    }
+  }
+}
