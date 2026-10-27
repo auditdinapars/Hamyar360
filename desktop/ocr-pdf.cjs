@@ -87,8 +87,16 @@ async function extractPdfWithOcr(pdfBytes,{onProgress=()=>{},createWorker=makeWo
    onProgress({page:p,total:document.numPages,state:'complete'});
   }
   const ocrPages=details.filter(x=>x.usedOcr);
+  // Preserve the prior bank-statement parser's reliable spacing for genuine text PDFs.
+  // PDF.js glyph runs may lose double spaces used as transaction-column separators.
+  let extracted=pages.join('\n\n');
+  if(ocrPages.length===0){
+   const pdfParse=require('pdf-parse');
+   const original=await pdfParse(buffer,{max:document.numPages});
+   if(typeof original.text==='string'&&original.text.trim())extracted=normalizeDigits(original.text);
+  }
   return {
-   text:pages.join('\n\n'),
+   text:extracted,
    ocr:{
     used:ocrPages.length>0,
     pages:ocrPages.length,
