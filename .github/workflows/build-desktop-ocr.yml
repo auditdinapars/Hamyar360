@@ -1,0 +1,117 @@
+name: Hasel360 Desktop Windows 0.9.1 Persian-English PDF OCR
+on:
+  workflow_dispatch:
+  push:
+    branches: [feature/desktop-pdf-ocr-v091]
+permissions:
+  contents: read
+jobs:
+  restore:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - name: Install HTML parser
+        run: python3 -m pip install beautifulsoup4==4.14.2
+      - name: Restore v0.7.0
+        run: python3 scripts/apply_v070_overlay.py
+      - name: Restore v0.7.1
+        run: python3 scripts/apply_v071_delta.py
+      - name: Restore v0.7.2
+        run: python3 scripts/apply_v072_overlay.py
+      - name: Restore v0.7.3
+        run: python3 scripts/apply_v073_overlay.py
+      - name: Restore v0.7.4
+        run: python3 scripts/apply_v074_overlay.py
+      - name: Restore v0.7.5
+        run: python3 scripts/apply_v075_overlay.py
+      - name: Restore v0.7.6
+        run: python3 scripts/apply_v076_overlay.py
+      - name: Restore v0.7.7
+        run: python3 scripts/apply_v077_overlay.py
+      - name: Restore Excel audit persistence
+        run: python3 scripts/apply_v077_core_patch.py
+      - name: Restore v0.7.7.1
+        run: python3 scripts/apply_v0771_stability.py
+      - name: Restore speech fallback tests
+        run: python3 scripts/apply_v0771_voice_tests.py
+      - name: Restore v0.7.8
+        run: python3 scripts/apply_v078_overlay.py
+      - name: Restore v0.8.0
+        run: python3 scripts/apply_v080_overlay.py
+      - name: Restore v0.8.1
+        run: python3 scripts/apply_v081_overlay.py
+      - name: Restore verified v0.8.2
+        run: python3 scripts/apply_v082_overlay.py
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Stage checksum-verified Persian and English OCR models
+        run: python3 desktop/prepare-ocr-langs.py
+      - name: Test financial logic
+        run: node --test tests/*.test.cjs
+      - name: Build desktop UI from verified code
+        run: node desktop/prepare.cjs
+      - name: Test desktop local core
+        run: node --test desktop/test/*.test.cjs
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Hasel360-v082-desktop-ui-verified
+          path: |
+            desktop/web/
+            desktop/ocr-langs/
+          retention-days: 1
+          if-no-files-found: error
+  windows:
+    needs: restore
+    runs-on: windows-2022
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - uses: actions/download-artifact@v4
+        with:
+          name: Hasel360-v082-desktop-ui-verified
+          path: desktop/
+      - name: Verify prepared desktop interface
+        shell: pwsh
+        run: |
+          if (!(Test-Path desktop/web/index.html)) { throw 'Missing desktop interface' }
+          if (!(Test-Path desktop/web/bank-reconcile.js)) { throw 'Missing banking logic' }
+      - name: Verify offline models before build
+        shell: pwsh
+        run: |
+          if (!(Test-Path desktop/ocr-langs/fas.traineddata)) { throw 'Missing Persian OCR model' }
+          if (!(Test-Path desktop/ocr-langs/eng.traineddata)) { throw 'Missing English OCR model' }
+      - name: Install desktop dependencies
+        working-directory: desktop
+        run: npm install --no-audit --no-fund
+      - name: Test desktop runtime logic
+        working-directory: desktop
+        env:
+          HASEL_OCR_E2E: '1'
+        run: npm test
+      - name: Build Windows installer
+        working-directory: desktop
+        env:
+          CSC_IDENTITY_AUTO_DISCOVERY: 'false'
+        run: npm run build:win
+      - name: Checksum installer
+        shell: pwsh
+        run: |
+          Get-ChildItem desktop/dist/*Setup.exe | ForEach-Object {
+            (Get-FileHash $_.FullName -Algorithm SHA256).Hash.ToLower() + "  " + $_.Name | Set-Content -Encoding ascii ($_.FullName + ".sha256")
+          }
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Hasel360-Desktop-Windows-v091-OCR-Installer
+          path: |
+            desktop/dist/*Setup.exe
+            desktop/dist/*Setup.exe.sha256
+          retention-days: 14
+          if-no-files-found: error
